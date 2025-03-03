@@ -1,0 +1,67 @@
+@font-face {
+    font-family: 'KCC-Sonkeechung';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/KCC-Sonkeechung.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'KCC-Sonkeechung';
+    text-align: center;
+    
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 15px;
+}
+
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.hero {
+    padding: 50px;
+    background-color: #f4f4f4;
+}
+.letter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 500px;
+    list-style-type: none;
+    margin: auto;
+}
+
+.section {
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.past {
+    background-color: #f4f4f4;
+    color: gray;
+}
+
+.today {
+    background-color: #ffeb99;
+    font-weight: bold;
+}
+
+.future {
+    background-color: #cce5ff;
+    opacity: 0.7;
+}
+
+h2 {
+    margin-bottom: 10px;
+}

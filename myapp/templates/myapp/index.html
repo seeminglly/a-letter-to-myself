@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Letter To Myself</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        @font-face {
+        font-family: 'KCC-Sonkeechung';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/KCC-Sonkeechung.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+            }
+        h1{
+            font-family: 'KCC-Sonkeechung';
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>A Letter To Myself</h1>
+    </header>
+
+    <section class="hero">
+        <h2>나에게 보내는 편지, 오늘 시작해 보세요.</h2>
+        {% load static %}
+        <a href="http://127.0.0.1:8000/writing/"><img src="{% static 'images/letter-ui.svg' %}" alt="편지 UI" width="150" ></a>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 A Letter To Myself</p>
+    </footer>
+</body>
+</html>

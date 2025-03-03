@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나에게 쓰는 편지</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
+        .section { padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .past { background-color: #f4f4f4; color: gray; }
+        .today { background-color: #ffeb99; font-weight: bold; }
+        .future { background-color: #cce5ff; opacity: 0.7; }
+        @font-face {
+        font-family: 'KCC-Sonkeechung';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/KCC-Sonkeechung.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+            }
+        h1,h2{
+            font-family: 'KCC-Sonkeechung';
+        }
+    </style>
+</head>
+<body>
+    <h1>📜 나에게 쓰는 편지</h1>
+
+    <div class="section past">
+        <h2>📜 과거의 편지</h2>
+        <ul id="past-list"></ul>
+    </div>
+
+    <div class="section today">
+        <h2>📩 오늘의 편지</h2>
+        <ul id="today-list"></ul>
+    </div>
+
+    <div class="section future">
+        <h2>🔮 미래의 편지</h2>
+        <ul id="future-list"></ul>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            const response = await fetch("http://localhost:5000/letters");
+            const letters = await response.json();
+            const today = new Date().toISOString().slice(0, 10);
+
+            const pastList = document.getElementById("past-list");
+            const todayList = document.getElementById("today-list");
+            const futureList = document.getElementById("future-list");
+
+            letters.forEach(letter => {
+                let listItem = document.createElement("li");
+                listItem.textContent = `${letter.letter_date} - ${letter.title}`;
+             // 날짜 변환 후 비교
+            let letterDate = new Date(letter.letter_date).toISOString().split("T")[0];
+
+
+                if (letter.letter_date < today) {
+                    pastList.appendChild(listItem);
+                } else if (letter.letter_date === today) {
+                    todayList.appendChild(listItem);
+                } else {
+                    futureList.appendChild(listItem);
+                }
+            });
+
+            
+        });
+    </script>
+</body>
+</html>
