@@ -3,10 +3,11 @@ from django.db import models
 CATEGORIES = (
     ('past','과거'),
      ('today','오늘'),
-     ('tomorrow','미래')
+     ('future','미래'),
 )
 # Create your models here.
 class Letters(models.Model):
+    id = models.AutoField(primary_key=True)  # 기본 키 설정
     title = models.CharField(max_length=200)  # 편지 제목
     content = models.TextField()  # 편지 내용
     image = models.ImageField(null=True, blank=True)
