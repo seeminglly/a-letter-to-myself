@@ -32,19 +32,47 @@ nav ul li {
     padding: 50px;
     background-color: #f4f4f4;
 }
-.letter-list {
+.container {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 20px;
-    max-width: 500px;
-    list-style-type: none;
-    margin: auto;
+}
+/* 편지 리스트가 많아질 경우 스크롤 가능하도록 설정 */
+.letter-list {
+    max-height: 200px; /* 최대 높이 제한 */
+    overflow-y: auto; /* 리스트가 넘칠 경우 스크롤 */
+    width: 100%;
+    padding: 5px;
+    border-radius: 10px;
 }
 
+/* 각 섹션 색상 유지 */
+.past { background-color: #f4f4f4; color: gray; }
+.today { background-color: #ffeb99; font-weight: bold; }
+.future { background-color: #cce5ff; opacity: 0.7; }
+
 .section {
+    width: 100%;
     padding: 15px;
     border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 제목을 고정하여 스크롤되지 않도록 설정 */
+.section h2 {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 10px;
+    z-index: 1000;
+    width: 100%;
+    text-align: center;
+    border-bottom: 2px solid #ddd;
 }
 
 .past {

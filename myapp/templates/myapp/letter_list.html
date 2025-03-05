@@ -26,60 +26,69 @@
 <body>
     <h1>📜 나에게 쓰는 편지</h1>
 
-    <div class="section past">
-        <h2>📜 과거의 편지</h2>
-        <ul>
-            {% for letter in letters %}
-                {% if letter.category == 'past' %}
-                <li class="modalList" data-id="{{ letter.id }}">
-                    {{ letter.letter_date }} - {{ letter.title }}
-                </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="section today">
-        <h2>📩 오늘의 편지</h2>
-        <ul>
-            {% for letter in letters %}
-                {% if letter.category == 'today' %}
-                <li class="modalList" data-id="{{ letter.id }}">
-                    {{ letter.letter_date }} - {{ letter.title }}
-                </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="section future">
-        <h2>🔮 미래의 편지</h2>
-        <ul>
-            {% for letter in letters %}
-                {% if letter.category == 'future'%}
-                <li class="modalList" data-id="{{ letter.id }}">
-                    {{ letter.letter_date }} - {{ letter.title }}
-                </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
+    
+    
 
     <!-- 모달 오버레이 (배경) -->
-<div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);" onclick="closeModal()"></div>
+    <div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);" onclick="closeModal()"></div>
 
-<!-- 모달창 -->
-<div id="letterModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 5px 10px rgba(0,0,0,0.3);">
-    <div id="popup" style="background-color: #cce5ff; padding: 20px; border-radius: 10px;">
-        <h2 id="modalTitle"></h2>
-        <p id="modalDate"></p>
-        <p id="modalContent"></p>
-        <button onclick="closeModal()">닫기</button>
+    <!-- 모달창 -->
+    <div id="letterModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 5px 10px rgba(0,0,0,0.3);">
+        <div id="popup" style="background-color: #cce5ff; padding: 20px; border-radius: 10px;">
+            <h2 id="modalTitle"></h2>
+            <p id="modalDate"></p>
+            <p id="modalContent"></p>
+            <button onclick="closeModal()">닫기</button>
+        </div>
     </div>
-</div>
 
-
- <!-- JS 파일 불러오기 -->
+    <div class="container">
+        <div class="section past">
+            <h2>📜 과거의 편지</h2>
+            <div class="letter-list">
+                <ul>
+                    {% for letter in letters %}
+                        {% if letter.category == 'past' %}
+                        <li class="modalList" data-id="{{ letter.id }}">
+                            {{ letter.letter_date }} - {{ letter.title }}
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    
+        <div class="section today">
+            <h2>📩 오늘의 편지</h2>
+            <div class="letter-list">
+                <ul>
+                    {% for letter in letters %}
+                        {% if letter.category == 'today' %}
+                        <li class="modalList" data-id="{{ letter.id }}">
+                            {{ letter.letter_date }} - {{ letter.title }}
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    
+        <div class="section future">
+            <h2>🔮 미래의 편지</h2>
+            <div class="letter-list">
+                <ul>
+                    {% for letter in letters %}
+                        {% if letter.category == 'future' %}
+                        <li class="modalList" data-id="{{ letter.id }}">
+                            {{ letter.letter_date }} - {{ letter.title }}
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
  <script src="{% static 'js/modal.js' %}"></script>
     
     
