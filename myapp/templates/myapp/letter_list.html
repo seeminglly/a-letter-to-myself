@@ -24,11 +24,12 @@
     </style>
 </head>
 <body>
-    <h1>📜 나에게 쓰는 편지</h1>
-
-    
-    
-
+    <!-- 카테고리 선택 버튼-->
+     <div class="category-btn">
+        <button onclick="showCategory('past')">📜 과거</button>
+        <button onclick="showCategory('today')">📩 오늘</button>
+        <button onclick="showCategory('future')">🔮 미래</button>
+     </div>
     <!-- 모달 오버레이 (배경) -->
     <div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);" onclick="closeModal()"></div>
 
@@ -43,8 +44,9 @@
     </div>
 
     <div class="container">
-        <div class="section past">
+        <div class="section past category-section" id="past">
             <h2>📜 과거의 편지</h2>
+            <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">어린 시절의 나에게 보내는 위로</p>
             <div class="letter-list">
                 <ul>
                     {% for letter in letters %}
@@ -58,8 +60,9 @@
             </div>
         </div>
     
-        <div class="section today">
+        <div class="section today category-section" id="today">
             <h2>📩 오늘의 편지</h2>
+            <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">지금의 나에게 보내는 응원</p>
             <div class="letter-list">
                 <ul>
                     {% for letter in letters %}
@@ -73,8 +76,9 @@
             </div>
         </div>
     
-        <div class="section future">
+        <div class="section future category-section" id="future">
             <h2>🔮 미래의 편지</h2>
+            <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">미래의 나에게 전하는 다짐</p
             <div class="letter-list">
                 <ul>
                     {% for letter in letters %}
@@ -90,8 +94,11 @@
     </div>
     
  <script src="{% static 'js/modal.js' %}"></script>
+ <script src="{% static 'js/script.js' %}"></script>
     
-    
+ <footer style="position: relative; left: 70%; top: 70%;">
+    <h1>From. </h1>
+</footer>
 </body>
 </html>
 

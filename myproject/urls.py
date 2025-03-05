@@ -23,5 +23,6 @@ urlpatterns = [
     path('', include('myapp.urls')),  # myapp의 URL 포함
     path('', views.home, name='home'),
     path('writing/', views.write_letter, name="writing"),
+    path('postbox/', views.postbox, name='postbox'),
     path('letters/', views.letter_list, name='letter_list'),  # 작성한 편지 목록
 ]

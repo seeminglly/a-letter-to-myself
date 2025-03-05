@@ -22,6 +22,8 @@ def write_letter(request):
         
     return render(request, 'myapp/writing.html', {'form': form})
 
+def postbox(request):
+    return render(request, 'myapp/postbox.html')
 
 # 2️⃣ 작성된 편지 목록 보기
 def letter_list(request):

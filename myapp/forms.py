@@ -7,7 +7,7 @@ class LetterForm(forms.ModelForm):
         fields = ['title', 'content', 'image','category','open_date']  # 사용자 입력 필드
 
         widgets = {
-            'content': forms.Textarea(attrs={'class':'form-control', 'style':'width: 400px; height:500px'}),
+            'content': forms.Textarea(attrs={'class':'form-control', 'style':'width: 350px; height:440px'}),
             'open_date': forms.DateInput(attrs={'type': 'date'}),  # 날짜 입력 필드
            
         }

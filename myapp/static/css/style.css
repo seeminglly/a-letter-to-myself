@@ -47,12 +47,8 @@ nav ul li {
     border-radius: 10px;
 }
 
-/* 각 섹션 색상 유지 */
-.past { background-color: #f4f4f4; color: gray; }
-.today { background-color: #ffeb99; font-weight: bold; }
-.future { background-color: #cce5ff; opacity: 0.7; }
 
-.section {
+/* .section {
     width: 100%;
     padding: 15px;
     border-radius: 10px;
@@ -61,7 +57,7 @@ nav ul li {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
+} */
 
 /* 제목을 고정하여 스크롤되지 않도록 설정 */
 .section h2 {
@@ -75,25 +71,22 @@ nav ul li {
     border-bottom: 2px solid #ddd;
 }
 
-.past {
-    background-color: #f4f4f4;
-    color: gray;
-}
-
-.today {
-    background-color: #ffeb99;
-    font-weight: bold;
-}
-
-.future {
-    background-color: #cce5ff;
-    opacity: 0.7;
-}
-
 h2 {
     margin-bottom: 10px;
 }
 
+/* .container .past{
+    background-color: #f4f4f4;
+    color: gray;
+}
+.container .section .today{
+    background-color: #ffeb99;
+    font-weight: bold;
+}
+.container .section .future{
+    background-color: #cce5ff;
+    opacity: 0.7;
+} */
 #letterModal{
     position: fixed; /* 화면에 고정 */
     z-index: 1; /* 상위에 위치 */
@@ -118,3 +111,30 @@ h2 {
     border-radius: 20px;
     display: block;
 }
+
+/* 카테고리 선택 버튼 스타일 */
+.category-buttons {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.category-buttons button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #ddd;
+    transition: background 0.3s ease;
+}
+
+.category-buttons button:hover {
+    background-color: #bbb;
+}
+
+/* 기본적으로 모든 카테고리 숨김 */
+.category-section {
+    display: none;
+}
+
