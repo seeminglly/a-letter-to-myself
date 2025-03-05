@@ -15,6 +15,63 @@
         h1{
             font-family: 'KCC-Sonkeechung';
         }
+        
+        .mailbox-container {
+            position: relative;
+            display: inline-block;
+            width: 400px;
+            height: 400px;
+            }
+
+        .mailbox {
+            width: 100%;
+        }
+
+        /* 클릭할 수 있는 편지 */
+        .letter {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            background-color: rgba(255, 255, 0, 0); /* 기본적으로 투명 */
+            cursor: pointer;
+        }
+
+/* 편지의 개별 위치 */
+.past {
+    top: 30px;
+    left: 50px;
+}
+
+.today {
+    top: 30px;
+    left: 160px;
+}
+
+.future {
+    top: 130px;
+    left: 110px;
+}
+
+/* 클릭하면 강조 효과 */
+.letter:hover {
+    background-color: rgba(255, 255, 0, 0.3); /* 연한 노란색 강조 */
+    border-radius: 5px;
+}
+
+/* 편지 리스트 숨김 */
+.letters-container {
+    margin-top: 20px;
+}
+
+.category {
+    display: none;
+}
+
+/* 선택된 카테고리 표시 */
+.category.active {
+    display: block;
+}
+</style>
     </style>
 </head>
 <body>
@@ -26,12 +83,26 @@
     <section class="hero">
         <h3>나에게 보내는 편지, 오늘 시작해 보세요.</h3>
         {% load static %}
-        <a href="http://127.0.0.1:8000/writing/"><img src="{% static 'images/letter-ui.svg' %}" alt="편지 UI" width="100" style="flex-direction: column"></a>
-        <a href="http://127.0.0.1:8000/letters/"><img src="{% static 'images/postbox.svg' %}" alt=""우체통 UI" width="200" style="flex-direction: column"></a>
+        <a href="http://127.0.0.1:8000/writing/"><img src="{% static 'images/pencil.png' %}" alt="편지 UI" width="60" style="flex-direction: column"></a>
+        <!-- 우체통과 클릭 가능한 편지 -->
+    <div class="mailbox-container" style="text-align: center;">
+        <img src="{% static 'images/postbox2.png' %}" alt=""우체통 UI" width="80%" style="flex-direction: column; ">
+
+        <!-- 개별 편지 클릭 -->
+        <!-- <div class="letter past" onclick="past_letters">📜 과거</div>
+        <div class="letter today" onclick="today_letters">📩 오늘</div>
+        <div class="letter future" onclick="future_letters">🔮 미래</div> -->
+        <div class="letter past" onclick="window.location.href='{% url 'past_letters' %}'">📜 과거</div>
+        <div class="letter today" onclick="window.location.href='{% url 'today_letters' %}'">📩 오늘</div>
+        <div class="letter future" onclick="window.location.href='{% url 'future_letters' %}'">🔮 미래</div>
+
+
+    </div>
     </section>
 
     <footer>
         <p>&copy; 2024 A Letter To Myself</p>
     </footer>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

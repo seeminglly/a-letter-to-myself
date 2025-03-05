@@ -1,2 +1,111 @@
 {% load static %}
-<a href="http://127.0.0.1:8000/letters/"><img src="{% static 'images/postbox2.png' %}" alt=""우체통 UI" width="200" style="flex-direction: column"></a>
+<!-- <a href="http://127.0.0.1:8000/letters/"><img src="{% static 'images/postbox2.png' %}" alt=""우체통 UI" width="100%" style="flex-direction: column"></a> -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우체통 카테고리 선택</title>
+    <style>
+        .mailbox-container {
+    position: relative;
+    display: inline-block;
+    width: 400px;
+    height: 400px;
+}
+
+.mailbox {
+    width: 100%;
+}
+
+/* 클릭할 수 있는 편지 */
+.letter {
+    position: absolute;
+    width: 80px;
+    height: 100px;
+    background-color: rgba(255, 255, 0, 0); /* 기본적으로 투명 */
+    cursor: pointer;
+}
+
+/* 편지의 개별 위치 */
+.past {
+    top: 30px;
+    left: 50px;
+}
+
+.today {
+    top: 30px;
+    left: 160px;
+}
+
+.future {
+    top: 170px;
+    left: 100px;
+}
+
+/* 클릭하면 강조 효과 */
+.letter:hover {
+    background-color: rgba(255, 255, 0, 0.3); /* 연한 노란색 강조 */
+    border-radius: 5px;
+}
+
+/* 편지 리스트 숨김 */
+.letters-container {
+    margin-top: 20px;
+}
+
+.category {
+    display: none;
+}
+
+/* 선택된 카테고리 표시 */
+.category.active {
+    display: block;
+}
+</style>
+</head>
+<body>
+
+    <h1>📮 편지함 - 카테고리 선택</h1>
+
+    <!-- 우체통과 클릭 가능한 편지 -->
+    <div class="mailbox-container">
+        <img src="{% static 'images/postbox2.png' %}" alt=""우체통 UI" width="100%" style="flex-direction: column">
+
+        <!-- 개별 편지 클릭 -->
+        <div class="letter past" onclick="showCategory('past')">과거</div>
+        <div class="letter today" onclick="showCategory('today')">오늘늘</div>
+        <div class="letter future" onclick="showCategory('future')">미래</div>
+    </div>
+
+    <!-- 편지 리스트 -->
+    <div class="letters-container">
+        <div id="past" class="letters category">
+            <h2>📜 과거의 편지</h2>
+            <ul>
+                <li>2024-03-01 - 지난 날의 나에게</li>
+                <li>2024-02-20 - 추억 속 이야기</li>
+            </ul>
+        </div>
+
+        <div id="today" class="letters category">
+            <h2>📩 오늘의 편지</h2>
+            <ul>
+                <li>2024-03-10 - 현재의 나에게</li>
+                <li>2024-03-10 - 오늘을 기록하며</li>
+            </ul>
+        </div>
+
+        <div id="future" class="letters category">
+            <h2>🔮 미래의 편지</h2>
+            <ul>
+                <li>2024-04-15 - 미래의 나에게</li>
+                <li>2024-05-01 - 희망의 메시지</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

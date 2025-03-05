@@ -32,6 +32,32 @@ def letter_list(request):
         print(f"Letter ID: {letter.id}")
     return render(request, 'myapp/letter_list.html', {'letters':letters})
 
+def past_letters(request):
+    """ 과거의 편지 목록 (오늘 이전 날짜) """
+    today = now().date()
+    letters = Letters.objects.filter(open_date__lt=today)
+    return render(request, 'myapp/letter_past.html', {'letters': letters})
+
+def today_letters(request):
+    """ 오늘의 편지 목록 """
+    today = now().date()  # 오늘 날짜 가져오기
+    letters = Letters.objects.filter(open_date=today)
+    
+    print(f"오늘 날짜: {today}")
+    print(f"오늘의 편지 개수: {letters.count()}")
+
+    for letter in letters:
+        print(f"Letter ID: {letter.id}, Title: {letter.title}, Open Date: {letter.open_date}")
+
+    return render(request, 'myapp/letter_today.html', {'letters': letters})
+
+
+def future_letters(request):
+    """ 미래의 편지 목록 (오늘 이후 날짜) """
+    today = now().date()
+    letters = Letters.objects.filter(open_date__gt=today)
+    return render(request, 'myapp/letter_future.html', {'letters': letters})
+
 #개별 편지 상세보기api
 def letter_json(request, letter_id):
     letter = get_object_or_404(Letters, id=letter_id)
