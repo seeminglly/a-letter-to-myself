@@ -30,3 +30,22 @@ function showCategory(category) {
     document.getElementById(category).classList.add('active');
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const menuButton = document.querySelector(".btn"); // 햄버거 버튼
+    const menu = document.getElementById("menu"); // 사이드 메뉴
+    const pageCover = document.querySelector(".page_cover"); // 배경 어두워지는 영역
+
+    // 햄버거 버튼 클릭 시 메뉴 열기
+    menuButton.addEventListener("click", function () {
+        document.documentElement.classList.toggle("open");
+        menu.classList.toggle("open");
+        pageCover.classList.toggle("open");
+    });
+
+    // 메뉴 바깥 클릭 시 닫기
+    pageCover.addEventListener("click", function () {
+        document.documentElement.classList.remove("open");
+        menu.classList.remove("open");
+        pageCover.classList.remove("open");
+    });
+});

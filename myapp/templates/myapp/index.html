@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Letter To Myself</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
         @font-face {
         font-family: 'KCC-Sonkeechung';
@@ -39,6 +40,7 @@
     justify-content: center;
     cursor: pointer;
     font-weight: bold;
+    
 }
 
 /* 과거 버튼 위치 (왼쪽 위) */
@@ -67,7 +69,28 @@
 
     <header>
         <h1>A Letter To Myself</h1>
+
     </header>
+    <!-- 햄버거 버튼 -->
+    <div class="btn">
+        <img src="{% static 'images/poststamp.png' %}" alt="우표스티커 UI" width="50px">
+    </div>
+
+    <!-- 메뉴 바깥을 클릭하면 닫힘 -->
+    <div class="page_cover"></div>
+
+    <!-- 사이드 메뉴 -->
+    <div id="menu">
+        <ul class="nav">
+            <li><a href="#">편지 쓰기</a></li>
+            <li><a href="#">편지 목록</a></li>
+            <li><a href="#">편지 루틴</a></li>
+            <li><a href="#">마이페이지</a></li>
+        </ul>
+    </div>
+
+    <!-- JavaScript 연결 -->
+    <script src="{% static 'js/script.js' %}"></script>
 
     <section class="hero">
         <h3>나에게 보내는 편지, 오늘 시작해 보세요.</h3>
@@ -85,6 +108,5 @@
     <footer>
         <p>&copy; 2024 A Letter To Myself</p>
     </footer>
-    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

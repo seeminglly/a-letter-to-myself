@@ -18,15 +18,84 @@ header {
 }
 
 
-nav ul {
-    list-style-type: none;
-    padding: 0;
+/* 햄버거 메뉴 */
+html.open {
+    overflow: hidden;
 }
 
-nav ul li {
-    display: inline;
-    margin: 0 10px;
+#menu {
+    width: 120px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: -140px;
+    z-index: 10;
+    background-color: rgb(164, 120, 100);
+    text-align: center;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    padding-top: 50px;
 }
+
+/* 메뉴가 열릴 때 */
+#menu.open {
+    left: 90px;
+}
+
+/* 배경 오버레이 */
+.page_cover {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 4;
+    display: none;
+}
+
+/* 배경 오버레이가 활성화될 때 */
+.page_cover.open {
+    display: block;
+}
+
+/* 햄버거 버튼 */
+.btn {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 11;
+    cursor: pointer;
+}
+
+/* 네비게이션 스타일 */
+#menu ul {
+    width: 100%;
+    padding: 0;
+    list-style: none;
+}
+
+#menu ul.nav li {
+    width: 100%;
+    font-size: 18px;
+}
+
+#menu ul.nav li a {
+    display: block;
+    padding: 15px;
+    color: blueviolet;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+#menu ul.nav li a:hover {
+    background: #eee;
+}
+
 
 .hero {
     padding: 50px;
@@ -38,19 +107,31 @@ nav ul li {
     height: auto;
 }
 
-.container {
+.letters-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 20px; /* 각 섹션 사이의 간격 */
+}
+
+.letters-section {
+    width: 100%;
+    max-width: 600px;
+    min-height: 200px; /* 최소 높이를 설정하여 리스트가 늘어나도 고정됨 */
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f8f8f8;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 /* 편지 리스트가 많아질 경우 스크롤 가능하도록 설정 */
 .letter-list {
-    max-height: 200px; /* 최대 높이 제한 */
+    max-height: 600px; /* 최대 높이 제한 */
     overflow-y: auto; /* 리스트가 넘칠 경우 스크롤 */
     width: 100%;
     padding: 5px;
     border-radius: 10px;
+    background-color: #f8f8f8;
+    position: absolute;
 }
 
 
