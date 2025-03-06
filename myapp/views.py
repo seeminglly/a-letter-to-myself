@@ -68,3 +68,7 @@ def letter_json(request, letter_id):
         'letter_date': letter.open_date.strftime("%Y-%m-%d"),
     }
     return JsonResponse(data)
+
+#편지 루틴 만들기
+def routine(request):
+    return render(request, 'myapp/routine.html')

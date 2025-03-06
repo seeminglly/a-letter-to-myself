@@ -30,12 +30,14 @@ html.open {
     top: 0;
     left: -140px;
     z-index: 10;
-    background-color: rgb(164, 120, 100);
+    background-color: rgb(164, 120, 100) !important;
     text-align: center;
     font-weight: bold;
     transition: all 0.3s ease-in-out;
     padding-top: 50px;
+    color: inherit !important;
 }
+
 
 /* 메뉴가 열릴 때 */
 #menu.open {
@@ -85,7 +87,7 @@ html.open {
 #menu ul.nav li a {
     display: block;
     padding: 15px;
-    color: blueviolet;
+    color: rgb(37, 37, 37) !important;
     text-align: center;
     font-weight: bold;
     text-decoration: none;
@@ -131,7 +133,7 @@ html.open {
     padding: 5px;
     border-radius: 10px;
     background-color: #f8f8f8;
-    position: absolute;
+    position: relative;
 }
 
 
@@ -162,18 +164,7 @@ h2 {
     margin-bottom: 10px;
 }
 
-/* .container .past{
-    background-color: #f4f4f4;
-    color: gray;
-}
-.container .section .today{
-    background-color: #ffeb99;
-    font-weight: bold;
-}
-.container .section .future{
-    background-color: #cce5ff;
-    opacity: 0.7;
-} */
+
 #letterModal{
     position: fixed; /* 화면에 고정 */
     z-index: 1; /* 상위에 위치 */
@@ -225,3 +216,7 @@ h2 {
     display: none;
 }
 
+/* 편지 루틴 */
+.routine-buttons button {
+    text-align: center;
+}

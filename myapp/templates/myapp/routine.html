@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나에게 쓰는 편지</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
+        
+        @font-face {
+        font-family: 'KCC-Sonkeechung';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/KCC-Sonkeechung.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+            }
+        h1,h2,ul{
+            font-family: 'KCC-Sonkeechung';
+        }
+    </style>
+</head>
+<body>
+    <header style="position: relative;left: 5%;">
+        <h1>From. </h1>
+    </header>
+
+    <h3>
+        말로 전할 수 없는 마음이 있습니다.</br>
+        잘 적지 못해도 좋아요</br>
+        나만의 편지 루틴을 만들면
+        알림이 가도록 설정할 수 있습니다
+    </h3>
+    <div class="routine-buttons">
+        <button onclick="setRoutine('weekly')">📅 매주/매월 한 통</button>
+        <button onclick="setRoutine('special')">🎉 특별한 날</button>
+        <button onclick="setRoutine('mood')">😊 감정에 따라</button>
+    </div>
+
+    <label for="special-date">기념일 선택:</label>
+    <input type="date" id="special-date">
+    <button onclick="saveSpecialDate()">저장</button>
+
+    <p>오늘 기분이 어떤가요?</p>
+    <button onclick="setMood('happy')">😊 행복해요</button>
+    <button onclick="setMood('sad')">😢 슬퍼요</button>
+    <button onclick="setMood('angry')">😠 화나요</button>
+    <button onclick="setMood('calm')">😌 차분해요</button>
+
+
+    
+ <script src="{% static 'js/modal.js' %}"></script>
+ <script src="{% static 'js/script.js' %}"></script>
+    
+ 
+</body>
+</html>
+
+
+
