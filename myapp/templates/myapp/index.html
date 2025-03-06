@@ -17,60 +17,49 @@
         }
         
         .mailbox-container {
-            position: relative;
-            display: inline-block;
-            width: 400px;
-            height: 400px;
-            }
-
-        .mailbox {
-            width: 100%;
-        }
-
-        /* 클릭할 수 있는 편지 */
-        .letter {
-            position: absolute;
-            width: 80px;
-            height: 100px;
-            background-color: rgba(255, 255, 0, 0); /* 기본적으로 투명 */
-            cursor: pointer;
-        }
-
-/* 편지의 개별 위치 */
-.past {
-    top: 30px;
-    left: 50px;
+    position: relative;
+    width: 100%;
+    max-width: 400px; /* 우체통 이미지 크기에 맞춰 조정 */
+    margin: auto;
+    text-align: center;
 }
 
-.today {
-    top: 30px;
-    left: 160px;
+.mailbox-img {
+    width: 100%; /* 반응형 크기 조정 */
+    height: auto;
 }
 
-.future {
-    top: 130px;
-    left: 110px;
+/* 개별 버튼의 위치 조정 */
+.letter {
+    position: absolute;
+    width: 60px; /* 버튼 크기 조정 */
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
 }
 
-/* 클릭하면 강조 효과 */
-.letter:hover {
-    background-color: rgba(255, 255, 0, 0.3); /* 연한 노란색 강조 */
-    border-radius: 5px;
+/* 과거 버튼 위치 (왼쪽 위) */
+.letter.past {
+    top: 10%;
+    left: 15%;
 }
 
-/* 편지 리스트 숨김 */
-.letters-container {
-    margin-top: 20px;
+/* 오늘 버튼 위치 (중앙 위) */
+.letter.today {
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-.category {
-    display: none;
+/* 미래 버튼 위치 (통 안안) */
+.letter.future {
+    top: 48%;
+    right: 50%;
 }
 
-/* 선택된 카테고리 표시 */
-.category.active {
-    display: block;
-}
 </style>
     </style>
 </head>
@@ -85,19 +74,12 @@
         {% load static %}
         <a href="http://127.0.0.1:8000/writing/"><img src="{% static 'images/pencil.png' %}" alt="편지 UI" width="60" style="flex-direction: column"></a>
         <!-- 우체통과 클릭 가능한 편지 -->
-    <div class="mailbox-container" style="text-align: center;">
-        <img src="{% static 'images/postbox2.png' %}" alt=""우체통 UI" width="80%" style="flex-direction: column; ">
-
-        <!-- 개별 편지 클릭 -->
-        <!-- <div class="letter past" onclick="past_letters">📜 과거</div>
-        <div class="letter today" onclick="today_letters">📩 오늘</div>
-        <div class="letter future" onclick="future_letters">🔮 미래</div> -->
-        <div class="letter past" onclick="window.location.href='{% url 'past_letters' %}'">📜 과거</div>
-        <div class="letter today" onclick="window.location.href='{% url 'today_letters' %}'">📩 오늘</div>
-        <div class="letter future" onclick="window.location.href='{% url 'future_letters' %}'">🔮 미래</div>
-
-
-    </div>
+        <div class="mailbox-container">
+            <img src="{% static 'images/postbox2.png' %}" alt=""우체통 UI" width="80%" ">
+            <div class="letter past" onclick="window.location.href='{% url 'past_letters' %}'">📜 과거</div>
+            <div class="letter today" onclick="window.location.href='{% url 'today_letters' %}'">📩 오늘</div>
+            <div class="letter future" onclick="window.location.href='{% url 'future_letters' %}'">🔮 미래</div>
+        </div>
     </section>
 
     <footer>
