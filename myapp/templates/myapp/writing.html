@@ -14,8 +14,10 @@
     <form method="POST", enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}  <!-- Django 폼 자동 렌더링 -->
+        
         <button type="submit">작성 완료</button>
     </form>
+    
 
     <footer>
         <p>&copy; 2024 A Letter To Myself</p>

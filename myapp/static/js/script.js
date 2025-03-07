@@ -55,3 +55,7 @@ function toggleDateOptions() {
     document.getElementById("weekly-options").style.display = (routineType === "weekly") ? "block" : "none";
     document.getElementById("monthly-options").style.display = (routineType === "monthly") ? "block" : "none";
 }
+
+function setMood(mood){
+    alert("오늘의 기분이 '${mood}'로 설정되었습니다. 편지를 작성해보세요!");
+}

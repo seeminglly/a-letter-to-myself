@@ -90,3 +90,7 @@ def save_routine(request):
         return redirect("home")
 
     return render(request, "myapp/routine.html",  {'days': days})
+
+   
+
+ 

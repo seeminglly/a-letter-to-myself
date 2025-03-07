@@ -6,6 +6,16 @@ CATEGORIES = (
      ('today','오늘'),
      ('future','미래'),
 )
+
+MOOD_CHOICES = [
+    ('happy', '😊 행복'),
+    ('sad', '😢 슬픔'),
+    ('angry', '😡 화남'),
+    ('worried', '🤔 고민'),
+    ('diary', '📝 일기'),
+]
+
+
 # Create your models here.
 class Letters(models.Model):
     id = models.AutoField(primary_key=True)  # 기본 키 설정
@@ -17,6 +27,7 @@ class Letters(models.Model):
     category = models.CharField(max_length=20,
                                 choices=CATEGORIES,
                                 default='오늘')
+    mood = models.CharField(max_length=10, choices=MOOD_CHOICES, default='diary')
     
     def __str__(self):
         return self.title
@@ -30,3 +41,4 @@ class LetterRoutine(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.routine_type} ({self.day_of_week} {self.time})"
+    

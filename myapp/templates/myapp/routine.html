@@ -14,7 +14,7 @@
         font-weight: normal;
         font-style: normal;
             }
-        h1,h2,ul{
+        h1,h2,ul,button, label, p{
             font-family: 'KCC-Sonkeechung';
         }
     </style>
@@ -76,11 +76,19 @@
     </div>
 
 
-    <p>오늘 기분이 어떤가요?</p>
-    <button onclick="setMood('happy')">😊 행복해요</button>
-    <button onclick="setMood('sad')">😢 슬퍼요</button>
-    <button onclick="setMood('angry')">😠 화나요</button>
-    <button onclick="setMood('calm')">😌 차분해요</button>
+    <label for="mood">오늘의 기분을 선택하세요:</label>
+    <select name="mood" id="mood">
+        <option value="happy">😊 행복</option>
+        <option value="sad">😢 슬픔</option>
+        <option value="angry">😡 화남</option>
+        <option value="worried">🤔 고민</option>
+        <option value="diary">📝 일기</option>
+    </select>
+    
+    <div class="writing">
+        <button onclick="goToWritingPage()">편지 작성하기</button>
+    </div>
+    
 
 
     
