@@ -24,21 +24,57 @@
         <h1>From. </h1>
     </header>
 
-    <h3>
-        말로 전할 수 없는 마음이 있습니다.</br>
-        잘 적지 못해도 좋아요</br>
-        나만의 편지 루틴을 만들면
-        알림이 가도록 설정할 수 있습니다
-    </h3>
+    
     <div class="routine-buttons">
         <button onclick="setRoutine('weekly')">📅 매주/매월 한 통</button>
         <button onclick="setRoutine('special')">🎉 특별한 날</button>
         <button onclick="setRoutine('mood')">😊 감정에 따라</button>
     </div>
 
-    <label for="special-date">기념일 선택:</label>
-    <input type="date" id="special-date">
-    <button onclick="saveSpecialDate()">저장</button>
+    <form id="routineForm">
+        {% csrf_token %}
+        <label for="routine-type">루틴 선택:</label>
+        <select id="routine-type" name="routine_type" onchange="toggleDateOptions()">
+            <option value="weekly">매주</option>
+            <option value="monthly">매월</option>
+        </select>
+    
+         <!-- 요일 선택 -->
+         <div id="weekly-options">
+            <label for="day-of-week">요일 선택:</label>
+            <select id="day-of-week" name="day_of_week">
+                <option value="Monday">월요일</option>
+                <option value="Tuesday">화요일</option>
+                <option value="Wednesday">수요일</option>
+                <option value="Thursday">목요일</option>
+                <option value="Friday">금요일</option>
+                <option value="Saturday">토요일</option>
+                <option value="Sunday">일요일</option>
+            </select>
+        </div>
+    
+        <!-- 날짜 선택 -->
+        <div id="monthly-options" style="display: none;">
+            <label for="day-of-month">날짜 선택:</label>
+            <select id="day-of-month" name="day_of_month">
+                {% for day in days %}
+                    <option value="{{ day }}">{{ day }}일</option>
+                {% endfor %}
+            </select>
+        </div>
+    
+        <label for="time">시간 선택:</label>
+        <input type="time" id="time" name="time">
+    
+        <button type="submit">저장</button>
+    </form>
+
+    <div class="special-date-part">
+        <label for="special-date">기념일 선택:</label>
+        <input type="date" id="special-date">
+        <button onclick="saveSpecialDate()">저장</button>
+    </div>
+
 
     <p>오늘 기분이 어떤가요?</p>
     <button onclick="setMood('happy')">😊 행복해요</button>
@@ -57,3 +93,50 @@
 
 
 
+ <!-- {% load static %}
+ <form id="routineForm">
+    {% csrf_token %}
+    <label for="routine-type">루틴 선택:</label>
+    <select id="routine-type" name="routine_type" onchange="toggleDateOptions()">
+        <option value="weekly">매주</option>
+        <option value="monthly">매월</option>
+    </select>
+
+     요일 선택
+     <div id="weekly-options">
+        <label for="day-of-week">요일 선택:</label>
+        <select id="day-of-week" name="day_of_week">
+            <option value="Monday">월요일</option>
+            <option value="Tuesday">화요일</option>
+            <option value="Wednesday">수요일</option>
+            <option value="Thursday">목요일</option>
+            <option value="Friday">금요일</option>
+            <option value="Saturday">토요일</option>
+            <option value="Sunday">일요일</option>
+        </select>
+    </div>
+
+    날짜 선택
+    <div id="monthly-options" style="display: none;">
+        <label for="day-of-month">날짜 선택:</label>
+        <select id="day-of-month" name="day_of_month">
+            {% for day in days %}
+                <option value="{{ day }}">{{ day }}일</option>
+            {% endfor %}
+        </select>
+        
+    </div>
+
+    <label for="time">시간 선택:</label>
+    <input type="time" id="time" name="time">
+
+    <button type="submit">저장</button>
+</form>
+<script src="{% static 'js/script.js' %}"></script>
+<!-- <script>
+    function toggleDateOptions() {
+        var routineType = document.getElementById("routine-type").value;
+        document.getElementById("weekly-options").style.display = (routineType === "weekly") ? "block" : "none";
+        document.getElementById("monthly-options").style.display = (routineType === "monthly") ? "block" : "none";
+    }
+</script> --> 

@@ -49,3 +49,9 @@ document.addEventListener("DOMContentLoaded", function () {
         pageCover.classList.remove("open");
     });
 });
+
+function toggleDateOptions() {
+    var routineType = document.getElementById("routine-type").value;
+    document.getElementById("weekly-options").style.display = (routineType === "weekly") ? "block" : "none";
+    document.getElementById("monthly-options").style.display = (routineType === "monthly") ? "block" : "none";
+}

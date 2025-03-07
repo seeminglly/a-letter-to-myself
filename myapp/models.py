@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 CATEGORIES = (
     ('past','과거'),
@@ -19,3 +20,13 @@ class Letters(models.Model):
     
     def __str__(self):
         return self.title
+    
+class LetterRoutine(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    routine_type = models.CharField(max_length=10, choices=[('weekly', '매주'), ('monthly', '매월')])
+    day_of_week = models.CharField(max_length=10, null=True, blank=True)  # 매주의 경우 요일 저장
+    time = models.TimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.routine_type} ({self.day_of_week} {self.time})"
