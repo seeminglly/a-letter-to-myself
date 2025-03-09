@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Letter To Myself</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ time }}">
+    <style>
+        @font-face {
+        font-family: 'KCC-Sonkeechung';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/KCC-Sonkeechung.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+            }
+        h1{
+            font-family: 'KCC-Sonkeechung';
+        }
+
+        input[type="text"], input[type="password"] {
+        width: 250px;
+        height: 32px;
+        font-size: 15px;
+        border: 0;
+        border-radius: 15px;
+        outline: none;
+        padding-left: 10px;
+        background-color: rgb(233,233,233);
+     }
+
+.btn-primary{
+    width: 263px;
+    height: 32px;
+    font-size: 15px;
+    border: 0;
+    border-radius: 15px;
+    outline: none;
+    padding-left: 10px;
+    background-color: rgb(164, 199, 255);
+    }
+.btn-primary:active{
+        width: 263px;
+        height: 32px;
+        font-size: 15px;
+        border: 0;
+        border-radius: 15px;
+        outline: none;
+        padding-left: 10px;
+        background-color: rgb(61, 135, 255);
+    }
+
+
+        
+    </style>
+</head>
+<body>
+
+    <header>
+
+    </header>
+    <!-- 햄버거 버튼 -->
+    <div class="btn">
+        <img src="{% static 'images/poststamp.png' %}" alt="우표스티커 UI" width="50px">
+    </div>
+
+    <!-- 메뉴 바깥을 클릭하면 닫힘 -->
+    <div class="page_cover"></div>
+
+    <!-- 사이드 메뉴 -->
+    <div id="menu">
+        <ul class="nav">
+            <li><a href="http://127.0.0.1:8000/writing">편지 쓰기</a></li>
+            <li><a href="http://127.0.0.1:8000/letters">편지 목록</a></li>
+            <li><a href="http://127.0.0.1:8000/routine">편지 루틴</a></li>
+            <li><a href="#">마이페이지</a></li>
+            <li><a href="http://127.0.0.1:8000/commons">로그인</a></li>
+        </ul>
+    </div>
+
+    <div class="container my-3">
+        <form method="post" action="http://127.0.0.1:8000/commons">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="username">사용자ID</label>
+                <input type="text" class="form-control" name="username" id="username"
+                       value="{{ form.username.value|default_if_none:'' }}">
+            </div>
+            <div class="mb-3">
+                <label for="password">비밀번호</label>
+                <input type="password" class="form-control" name="password" id="password"
+                       value="{{ form.password.value|default_if_none:'' }}">
+            </div>
+            <button type="submit" class="btn btn-primary">로그인</button>
+        </form>
+    </div>
+
+    <!-- JavaScript 연결 -->
+    <script src="{% static 'js/script.js' %}"></script>
+
+   
+
+    <footer>
+        <p>&copy; 2024 A Letter To Myself</p>
+    </footer>
+</body>
+</html>

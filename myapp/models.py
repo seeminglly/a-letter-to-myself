@@ -12,7 +12,6 @@ MOOD_CHOICES = [
     ('sad', '😢 슬픔'),
     ('angry', '😡 화남'),
     ('worried', '🤔 고민'),
-    ('diary', '📝 일기'),
 ]
 
 

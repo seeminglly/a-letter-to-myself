@@ -85,6 +85,71 @@
                 </ul>
             </div>
         </div>
+
+        <div class="letters-section happy">
+            <h2> 행복 </h2>
+            <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">행복했던 기억들</p>
+            <div class="letter-list">
+                <ul>
+                    {% for letter in letters %}
+                        {% if letter.category == 'happy' %}
+                        <li class="modalList" data-id="{{ letter.id }}">
+                            {{ letter.letter_date }} - {{ letter.title }}
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="letters-section sad">
+            <h2> 슬픔 </h2>
+            <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">오늘 기분이 우울한가요? 과거의 편지를 읽어보세요!</p>
+            <div class="letter-list">
+                <ul>
+                    {% for letter in letters %}
+                        {% if letter.category == 'sad' %}
+                        <li class="modalList" data-id="{{ letter.id }}">
+                            {{ letter.letter_date }} - {{ letter.title }}
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="letters-section angry">
+            <h2> 화남 </h2>
+            <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';"></p>
+            <div class="letter-list">
+                <ul>
+                    {% for letter in letters %}
+                        {% if letter.category == 'happy' %}
+                        <li class="modalList" data-id="{{ letter.id }}">
+                            {{ letter.letter_date }} - {{ letter.title }}
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="letters-section worried">
+            <h2> 고민 </h2>
+            <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">수많은 걱정과 고민의 나날들</p>
+            <div class="letter-list">
+                <ul>
+                    {% for letter in letters %}
+                        {% if letter.category == 'happy' %}
+                        <li class="modalList" data-id="{{ letter.id }}">
+                            {{ letter.letter_date }} - {{ letter.title }}
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
     </div>
     
  <script src="{% static 'js/modal.js' %}"></script>

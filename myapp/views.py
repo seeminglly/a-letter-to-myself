@@ -4,6 +4,9 @@ from .models import Letters, LetterRoutine
 from .forms import LetterForm
 from django.utils.timezone import now  # 현재 날짜 가져오기
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from commons.forms import UserForm
 # Create your views here.
 def home(request):
     return render(request, 'myapp/index.html')
@@ -92,5 +95,27 @@ def save_routine(request):
     return render(request, "myapp/routine.html",  {'days': days})
 
    
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # 로그인 후 홈으로 이동
+    return render(request, 'commons/login.html')
 
- 
+def signup(request):
+    if request.method == "POST":
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)  # 사용자 인증
+            login(request, user)  # 로그인
+            return redirect('index')
+    else:
+        form = UserForm()
+    return render(request, 'commons/signup.html', {'form': form})
+

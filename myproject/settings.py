@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',  # 생성한 앱 추가
+    'commons',  # ✅ commons 앱 추가
 ]
 
 MIDDLEWARE = [
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/"templates"],
+        'DIRS': [os.path.join(BASE_DIR, 'myapp', 'templates')],  # ✅ 경로 추가
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -131,3 +132,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
+LOGIN_REDIRECT_URL = '/'  # 로그인 성공 후 이동할 페이지
+LOGOUT_REDIRECT_URL = '/'  # 로그아웃 후 이동할 페이지
