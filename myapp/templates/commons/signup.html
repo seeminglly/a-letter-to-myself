@@ -1,129 +1,29 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Letter To Myself</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ time }}">
-    <style>
-        @font-face {
-        font-family: 'KCC-Sonkeechung';
-        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/KCC-Sonkeechung.woff2') format('woff2');
-        font-weight: normal;
-        font-style: normal;
-            }
-        h1{
-            font-family: 'KCC-Sonkeechung';
-        }
-
-        table {
-     width: 280px;
-    height: 550px;
-    margin: auto;      
-        }
-        .text {
-    width: 250px;
-    height: 32px;
-    font-size: 15px;
-    border: 0;
-    border-radius: 15px;
-    outline: none;
-    padding-left: 10px;
-    background-color: rgb(233,233,233);
-    }
-    .btn {
-    width: 262px;
-    height: 32px;
-    font-size: 15px;
-    border: 0;
-    border-radius: 15px;
-    outline: none;
-    padding-left: 10px;
-    background-color: rgb(164, 199, 255);
-}
-.btn:active {
-    width: 262px;
-    height: 32px;
-    font-size: 15px;
-    border: 0;
-    border-radius: 15px;
-    outline: none;
-    padding-left: 10px;
-    background-color: rgb(61, 135, 255);
-}
-        
-    </style>
-</head>
-<body>
-
-    <header>
-
-    </header>
-    <!-- 햄버거 버튼 -->
-    <div class="btn">
-        <img src="{% static 'images/poststamp.png' %}" alt="우표스티커 UI" width="50px">
-    </div>
-
-    <!-- 메뉴 바깥을 클릭하면 닫힘 -->
-    <div class="page_cover"></div>
-
-    <!-- 사이드 메뉴 -->
-    <div id="menu">
-        <ul class="nav">
-            <li><a href="http://127.0.0.1:8000/writing">편지 쓰기</a></li>
-            <li><a href="http://127.0.0.1:8000/letters">편지 목록</a></li>
-            <li><a href="http://127.0.0.1:8000/routine">편지 루틴</a></li>
-            <li><a href="#">마이페이지</a></li>
-            <li><a href="http://127.0.0.1:8000/commons">로그인</a></li>
-        </ul>
-    </div>
-
-    <div class="container my-3">
-        <form method="post" action="http://127.0.0.1:8000/commons">
-            {% csrf_token %}
-            <table>
-                <tr>
-                    회원가입
-                </tr>
-                <div class="mb-3">
-                    <label for="username">아이디</label>
-                    <input type="text" class="form-control" name="username" id="username"
-                           value="{{ form.username.value|default_if_none:'' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" name="password" id="password"
-                           value="{{ form.password.value|default_if_none:'' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="password">비밀번호 확인</label>
-                    <input type="password" class="form-control" name="password" id="password"
-                           value="{{ form.password.value|default_if_none:'' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="name">이름</label>
-                    <input type="text" class="form-control" name="name" id="name"
-                           value="{{ form.name.value|default_if_none:'' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="birthday">생년월일</label>
-                    <input type="date"class="form-control" name="birthday" id="birthday"
-                           value="{{ form.birthday.value|default_if_none:'' }}">
-                </div>
-                <tr><td><input type="submit" value="가입하기" class="btn" onclick="alert('가입 성공!')"></td></tr>
-            </form>
+{% block content %}
+<div class="container my-3">
+    <form method="post" action="{% url 'commons:signup' %}">
+        {% csrf_token %}
+        {% include "form_errors.html" %}
+        <div class="mb-3">
+            <label for="username">사용자 이름</label>
+            <input type="text" class="form-control" name="username" id="username"
+                   value="{{ form.username.value|default_if_none:'' }}">
         </div>
-            </table>
-           
-
-    <!-- JavaScript 연결 -->
-    <script src="{% static 'js/script.js' %}"></script>
-
-   
-
-    <footer>
-        <p>&copy; 2024 A Letter To Myself</p>
-    </footer>
-</body>
-</html>
+        <div class="mb-3">
+            <label for="password1">비밀번호</label>
+            <input type="password" class="form-control" name="password1" id="password1"
+                   value="{{ form.password1.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="password2">비밀번호 확인</label>
+            <input type="password" class="form-control" name="password2" id="password2"
+                   value="{{ form.password2.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="email">이메일</label>
+            <input type="text" class="form-control" name="email" id="email"
+                   value="{{ form.email.value|default_if_none:'' }}">
+        </div>
+        <button type="submit" class="btn btn-primary">생성하기</button>
+    </form>
+</div>
+{% endblock %}

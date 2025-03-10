@@ -6,7 +6,8 @@ from django.utils.timezone import now  # 현재 날짜 가져오기
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from commons.forms import UserForm
+
+
 # Create your views here.
 def home(request):
     return render(request, 'myapp/index.html')
@@ -102,7 +103,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')  # 로그인 후 홈으로 이동
+            return redirect('index')  # 로그인 후 홈으로 이동
     return render(request, 'commons/login.html')
 
 def signup(request):

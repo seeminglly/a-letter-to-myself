@@ -22,6 +22,7 @@ from myapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('myapp.urls')),  # myapp의 URL 포함
+    path('commons/', include('commons.urls')),
     path('', views.home, name='home'),
     path('writing/', views.write_letter, name="writing"),
     path('postbox/', views.postbox, name='postbox'),
@@ -30,6 +31,6 @@ urlpatterns = [
     path('letters/today/', views.today_letters, name='today_letters'),  # ✅ 오늘 편지 목록
     path('letters/future/', views.future_letters, name='future_letters'),  # ✅ 미래 편지 목록
     path('routine/', views.save_routine , name="routine"),
-    path('login/', views.login_view, name='login'),
-    path('signup/', views.signup, name='signup'),
+
+    path('accounts/', include('django.contrib.auth.urls')),  
 ]
