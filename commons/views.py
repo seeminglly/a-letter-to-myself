@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 
 # Create your views here.
 from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from commons.forms import UserForm
 
@@ -22,3 +23,9 @@ def signup(request):
     else:
             form=UserForm()
     return render(request, 'commons/signup.html', {'form':form})
+
+@login_required
+def mypage(request):
+     user = request.user
+     context = {'profile_user':user, 'profile_type': 'base'}
+     return render(request, 'commons/mypage.html', {'user':user})
