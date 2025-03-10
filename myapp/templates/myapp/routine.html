@@ -4,6 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!-- FullCalendar JS -->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- FullCalendar CSS -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <title>나에게 쓰는 편지</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
@@ -20,8 +25,8 @@
     </style>
 </head>
 <body>
-    <header style="position: relative;left: 5%;">
-        <h1>From. </h1>
+    <header style="position: relative;left: 25%;">
+        <h1>A Letter To Myself</h1>
     </header>
 
     
@@ -31,13 +36,14 @@
         <button onclick="setRoutine('mood')">😊 감정에 따라</button>
     </div>
 
-    <form id="routineForm">
-        {% csrf_token %}
-        <label for="routine-type">루틴 선택:</label>
-        <select id="routine-type" name="routine_type" onchange="toggleDateOptions()">
-            <option value="weekly">매주</option>
-            <option value="monthly">매월</option>
-        </select>
+    <div class="routine-container">
+        <h2>📅 편지 루틴 설정</h2>
+        <form id="routineForm">
+            <label>반복 주기:</label>
+            <select id="routineType">
+                <option value="weekly">매주</option>
+                <option value="monthly">매월</option>
+            </select>
     
          <!-- 요일 선택 -->
          <div id="weekly-options">
@@ -63,39 +69,75 @@
             </select>
         </div>
     
-        <label for="time">시간 선택:</label>
-        <input type="time" id="time" name="time">
-    
-        <button type="submit">저장</button>
+        <label>시간 선택:</label>
+        <input type="time" id="routineTime">
+        
+        <button type="submit">📬 루틴 추가</button>
     </form>
+    </div>
 
     <div class="special-date-part">
-        <label for="special-date">기념일 선택:</label>
+        <h2>📅 기념일 설정</h2>
+        <label for="special-date">날짜 선택:</label>
         <input type="date" id="special-date">
         <button onclick="saveSpecialDate()">저장</button>
     </div>
 
+    <div class="routine-list">
+        <h2>📖 내 편지 루틴</h2>
+        <ul>
+            <li>매주 월요일 - 18:00 <button class="delete-btn">🗑</button></li>
+            <li>매월 15일 - 20:00 <button class="delete-btn">🗑</button></li>
+        </ul>
+    </div>
+    
 
-    <label for="mood">오늘의 기분을 선택하세요:</label>
-    <select name="mood" id="mood">
-        <option value="happy">😊 행복</option>
-        <option value="sad">😢 슬픔</option>
-        <option value="angry">😡 화남</option>
-        <option value="worried">🤔 고민</option>
-        <option value="diary">📝 일기</option>
-    </select>
+    <div class="mood-list">
+        <h2>😊 오늘 기분은? </h2>
+        <label for="mood">오늘의 기분을 선택하세요:</label>
+        <select name="mood" id="mood">
+            <option value="happy">😊 행복</option>
+            <option value="sad">😢 슬픔</option>
+            <option value="angry">😡 화남</option>
+            <option value="worried">🤔 고민</option>
+            <option value="diary">📝 일기</option>
+        </select>
+    </div>
     
     <div class="writing">
         <button onclick="goToWritingPage()">편지 작성하기</button>
     </div>
-    
+
+    <h2>📅 편지 루틴 캘린더</h2>
+    <div id="calendar"></div> <!-- 캘린더 표시 영역 -->
 
 
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                height: 450,
+                aspectRatio: 2,
+                initialView: 'dayGridMonth',
+                stickyHeaderDates: true,
+                ihandleWindowResize : true, // 기본값 | Type : Boolean
+                locale: 'ko',
+                events: "/api/routines/", // Django에서 데이터 불러오기
+                
+                dateClick: function (info) {
+                    alert(info.dateStr + "에 편지를 작성하세요!");
+                }
+                
+            });
+            calendar.render();
+        });
+        
+    </script>
     
- <script src="{% static 'js/modal.js' %}"></script>
- <script src="{% static 'js/script.js' %}"></script>
-    
- 
 </body>
 </html>
 
@@ -141,10 +183,4 @@
     <button type="submit">저장</button>
 </form>
 <script src="{% static 'js/script.js' %}"></script>
-<!-- <script>
-    function toggleDateOptions() {
-        var routineType = document.getElementById("routine-type").value;
-        document.getElementById("weekly-options").style.display = (routineType === "weekly") ? "block" : "none";
-        document.getElementById("monthly-options").style.display = (routineType === "monthly") ? "block" : "none";
-    }
-</script> --> 
+ 

@@ -7,7 +7,7 @@ from myapp import views
 urlpatterns = [
     path('letters/', letter_list, name='letter_list'),
     path('api/letters/<int:letter_id>/', letter_json, name='letter_json'),  # 편지 상세 API
-    
+    path('api/routines/', views.get_routine_events, name='get_routine_events'),
     path('signup/', views.signup, name='signup'),
 ]
 

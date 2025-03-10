@@ -120,3 +120,15 @@ def signup(request):
         form = UserForm()
     return render(request, 'commons/signup.html', {'form': form})
 
+def get_routine_events(request):
+    """편지 루틴 정보를 JSON 데이터로 반환"""
+    routines = LetterRoutine.objects.all()
+    events = []
+
+    for routine in routines:
+        events.append({
+            "title": f"📜 {routine.routine_type} 루틴",
+            "start": routine.date.strftime("%Y-%m-%d")
+        })
+
+    return JsonResponse(events, safe=False)

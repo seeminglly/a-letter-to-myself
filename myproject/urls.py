@@ -19,6 +19,9 @@ from django.urls import path, include
 from myapp import views
 
 
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('myapp.urls')),  # myapp의 URL 포함
@@ -31,6 +34,6 @@ urlpatterns = [
     path('letters/today/', views.today_letters, name='today_letters'),  # ✅ 오늘 편지 목록
     path('letters/future/', views.future_letters, name='future_letters'),  # ✅ 미래 편지 목록
     path('routine/', views.save_routine , name="routine"),
-
     path('accounts/', include('django.contrib.auth.urls')),  
+   
 ]

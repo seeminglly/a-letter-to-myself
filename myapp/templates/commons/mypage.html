@@ -1,5 +1,6 @@
 {% block content %}
     <h2>{{ user.username }}님의 마이페이지</h2>
+    <p>프로필 사진: {{ user.picture }}</p>
     <p>이메일: {{ user.email }}</p>
     <p>가입 날짜: {{ user.date_joined }}</p>
     <a href="{% url 'commons:logout' %}">로그아웃</a>

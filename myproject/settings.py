@@ -134,3 +134,6 @@ CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 LOGIN_REDIRECT_URL = '/'  # 로그인 성공 후 이동할 페이지
 LOGOUT_REDIRECT_URL = '/'  # 로그아웃 후 이동할 페이지
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
