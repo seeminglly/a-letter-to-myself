@@ -59,3 +59,4 @@ function toggleDateOptions() {
 function setMood(mood){
     alert("오늘의 기분이 '${mood}'로 설정되었습니다. 편지를 작성해보세요!");
 }
+

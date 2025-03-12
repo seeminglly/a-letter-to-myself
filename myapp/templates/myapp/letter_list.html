@@ -5,12 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>나에게 쓰는 편지</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ time }}">
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
-        .section { padding: 15px; border-radius: 10px; margin-bottom: 20px; display: inline-block;}
-        .past { background-color: #f4f4f4; }
-        .today { background-color: #ffeb99; }
-        .future { background-color: #cce5ff; }
+        body { font-family: KCC-Sonkeechung; max-width: 600px; margin: auto; }
+        
         
         @font-face {
         font-family: 'KCC-Sonkeechung';
@@ -21,14 +19,108 @@
         h1,h2,ul{
             font-family: 'KCC-Sonkeechung';
         }
+        
+        .tabs li {
+            display: inline-flex;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: #999;
+            border-bottom: 2px solid transparent;
+            &:hover {
+            color: #555;
+            transition: 0.5s;
+            }
+        }
+        /* .tabs li.active {
+        color: slateblue;
+        border-bottom: 2px solid slateblue;
+        &:hover {
+            background: slateblue;
+            color: #fff;
+        }
+        }  */
+
+        /* 기본적으로 모든 콘텐츠 숨기기 */
+        [data-tab-content] {
+            display: none;
+        }
+
+        /* 활성화된 콘텐츠만 보이게 설정 */
+        [data-tab-content].active {
+            display: block !important;
+        }
+
+        /* 선택된 탭 강조 */
+        .tabs li.active {
+            font-weight: bold;
+            border-bottom: 2px solid blue;
+        }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const tabs = document.querySelectorAll("[data-tab-target]");
+    const tabContents = document.querySelectorAll("[data-tab-content]");
+
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const targetId = tab.getAttribute("[data-tab-target]");
+            const targetContent = document.querySelector(targetId);
+            if (!targetContent) {
+                console.error("탭 콘텐츠를 찾을 수 없습니다:", targetId);
+                return;
+            }
+
+            // 모든 탭 버튼에서 active 클래스 제거
+            tabs.forEach(t => t.classList.remove("active"));
+            // 현재 클릭된 탭에 active 클래스 추가
+            tab.classList.add("active");
+
+            // 모든 탭 콘텐츠 숨김
+            tabContents.forEach(content => content.classList.remove("active"));
+            // 선택된 콘텐츠만 표시
+            targetContent.classList.add("active");
+        });
+    });
+});
+
+    </script>
 </head>
 <body>
+    <!-- 햄버거 버튼 -->
+    <div class="btn">
+        <img src="{% static 'images/poststamp.png' %}" alt="우표스티커 UI" width="50px">
+    </div>
+
+    <!-- 메뉴 바깥을 클릭하면 닫힘 -->
+    <div class="page_cover"></div>
+
+    <!-- 사이드 메뉴 -->
+    <div id="menu">
+        <ul class="nav">
+            <li><a href="http://127.0.0.1:8000/writing">편지 쓰기</a></li>
+            <li><a href="http://127.0.0.1:8000/letters">편지 목록</a></li>
+            <li><a href="http://127.0.0.1:8000/routine">편지 루틴</a></li>
+            {% if user.is_authenticated %}
+                <a href="{% url 'commons:mypage' %}">마이페이지</a>
+            {% else %}
+                <a href="{% url 'commons:login' %}">로그인</a>
+            {% endif %}
+            <li>
+                {% if user.is_authenticated %}
+                <a href="{% url 'commons:logout' %}">{{ user.username }} (로그아웃)</a>
+                
+                {% endif %}
+            </li>
+            <li><a href="{% url 'commons:signup' %}">회원가입</a></li>
+            
+        </ul>
+    </div>
+    
     <!-- 모달 오버레이 (배경) -->
     <div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);" onclick="closeModal()"></div>
 
     <!-- 모달창 -->
-    <div id="letterModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 5px 10px rgba(0,0,0,0.3);">
+    <div id="letterModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 5px 10px rgba(0,0,0,0.3);">
         <div id="popup" style="background-color: #cce5ff; padding: 20px; border-radius: 10px;">
             <h2 id="modalTitle"></h2>
             <p id="modalDate"></p>
@@ -36,48 +128,47 @@
             <button onclick="closeModal()">닫기</button>
         </div>
     </div>
-
-    <div class="letters-container">
-        <div class="letters-section past">
-            <h2>📜 과거의 편지</h2>
-            <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">어린 시절의 나에게 보내는 위로</p>
-            <div class="letter-list">
+    
+    <div class="letter-container">
+        <div class="tabs">
+            <li data-tab-target="#past">과거</li>
+            <li data-tab-target="#today" class="active">오늘</li>
+            <li data-tab-target="#future">미래</li>
+        </div>
+        <div class="letters-section">
+            <div id="past" data-tab-content>
+                <h1>📜 과거의 편지</h1>
+                <p style="font-size: 20px; font-family: 'KCC-Sonkeechung';">어린 시절의 나에게 보내는 위로</p>
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'past' %}
-                        <li class="modalList" data-id="{{ letter.id }}">
+                        <li class="modalList" data-id="{{ letter.id }}" style="list-style-type: none;">
                             {{ letter.letter_date }} - {{ letter.title }}
                         </li>
                         {% endif %}
                     {% endfor %}
                 </ul>
             </div>
-        </div>
-    
-        <div class="letters-section today">
-            <h2>📩 오늘의 편지</h2>
-            <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">지금의 나에게 보내는 응원</p>
-            <div class="letter-list">
+            <div id="today" data-tab-content class="active">
+                <h1>📩 오늘의 편지</h1>
+                <p style="font-size: 20px; font-family: 'KCC-Sonkeechung';">지금의 나에게 보내는 응원</p>
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'today' %}
-                        <li class="modalList" data-id="{{ letter.id }}">
+                        <li class="modalList" data-id="{{ letter.id }}" style="list-style-type: none;">
                             {{ letter.letter_date }} - {{ letter.title }}
                         </li>
                         {% endif %}
                     {% endfor %}
                 </ul>
             </div>
-        </div>
-    
-        <div class="letters-section future">
-            <h2>🔮 미래의 편지</h2>
-            <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">미래의 나에게 전하는 다짐</p
-            <div class="letter-list">
+            <div id="future" data-tab-content>
+                <h1>🔮 미래의 편지</h1>
+                <p style="font-size:20px; font-family: 'KCC-Sonkeechung';">미래의 나에게 전하는 다짐</p>
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'future' %}
-                        <li class="modalList" data-id="{{ letter.id }}">
+                        <li class="modalList" data-id="{{ letter.id }}" style="list-style-type: none;">
                             {{ letter.letter_date }} - {{ letter.title }}
                         </li>
                         {% endif %}
@@ -85,15 +176,15 @@
                 </ul>
             </div>
         </div>
-
-        <div class="letters-section happy">
+    </div>
+        <!-- <div class="letters-section" id="happy">
             <h2> 행복 </h2>
             <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">행복했던 기억들</p>
             <div class="letter-list">
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'happy' %}
-                        <li class="modalList" data-id="{{ letter.id }}">
+                        <li class="modalList" data-id="{{ letter.id }}" style="list-style-type: none;">
                             {{ letter.letter_date }} - {{ letter.title }}
                         </li>
                         {% endif %}
@@ -102,14 +193,14 @@
             </div>
         </div>
 
-        <div class="letters-section sad">
+        <div class="letters-section" id="sad">
             <h2> 슬픔 </h2>
             <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">오늘 기분이 우울한가요? 과거의 편지를 읽어보세요!</p>
             <div class="letter-list">
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'sad' %}
-                        <li class="modalList" data-id="{{ letter.id }}">
+                        <li class="modalList" data-id="{{ letter.id }}" style="list-style-type: none;">
                             {{ letter.letter_date }} - {{ letter.title }}
                         </li>
                         {% endif %}
@@ -118,14 +209,14 @@
             </div>
         </div>
 
-        <div class="letters-section angry">
+        <div class="letters-section" id="angry">
             <h2> 화남 </h2>
             <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';"></p>
             <div class="letter-list">
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'happy' %}
-                        <li class="modalList" data-id="{{ letter.id }}">
+                        <li class="modalList" data-id="{{ letter.id }}" style="list-style-type: none;">
                             {{ letter.letter_date }} - {{ letter.title }}
                         </li>
                         {% endif %}
@@ -134,28 +225,35 @@
             </div>
         </div>
         
-        <div class="letters-section worried">
+        <div class="letters-section" id="worried">
             <h2> 고민 </h2>
             <p style="font-size: 13px; font-family: 'KCC-Sonkeechung';">수많은 걱정과 고민의 나날들</p>
             <div class="letter-list">
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'happy' %}
-                        <li class="modalList" data-id="{{ letter.id }}">
+                        <li class="modalList" data-id="{{ letter.id }}" style="list-style-type: none;">
                             {{ letter.letter_date }} - {{ letter.title }}
                         </li>
                         {% endif %}
                     {% endfor %}
                 </ul>
             </div>
-        </div>
+        </div> -->
         
-    </div>
+    
     
  <script src="{% static 'js/modal.js' %}"></script>
  <script src="{% static 'js/script.js' %}"></script>
     
-
+<!-- <script>
+    function showCategory(category) {
+        document.querySelectorAll('.letter-list').forEach(list => list.classList.add('hidden'));
+        document.getElementById(category).classList.remove('hidden');
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`[onclick="showCategory('${category}')"]`).classList.add('active');
+} -->
+</script>
 </body>
 </html>
 

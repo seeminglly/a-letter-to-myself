@@ -109,14 +109,10 @@ html.open {
     height: auto;
 }
 
-.letters-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px; /* 각 섹션 사이의 간격 */
-}
 
 .letters-section {
+    align-items: center;
+    flex-direction: column;
     width: 100%;
     max-width: 600px;
     min-height: 200px; /* 최소 높이를 설정하여 리스트가 늘어나도 고정됨 */
@@ -136,17 +132,6 @@ html.open {
     position: relative;
 }
 
-
-/* .section {
-    width: 100%;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-} */
 
 /* 제목을 고정하여 스크롤되지 않도록 설정 */
 .section h2 {
@@ -221,3 +206,6 @@ h2 {
     text-align: center;
 }
 
+.letters-section{
+    display: none;
+}

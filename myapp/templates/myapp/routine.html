@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <!-- FullCalendar JS -->
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
+    
+     <!-- JavaScript 연결 -->
+    <script src="{% static 'js/script.js' %}"></script>
     <!-- FullCalendar CSS -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <title>나에게 쓰는 편지</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ time }}">
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
         
@@ -25,9 +26,38 @@
     </style>
 </head>
 <body>
-    <header style="position: relative;left: 25%;">
+    <header style="position: relative;">
         <h1>A Letter To Myself</h1>
     </header>
+    <!-- 햄버거 버튼 -->
+    <div class="btn">
+        <img src="{% static 'images/poststamp.png' %}" alt="우표스티커 UI" width="50px">
+    </div>
+
+    <!-- 메뉴 바깥을 클릭하면 닫힘 -->
+    <div class="page_cover"></div>
+
+    <!-- 사이드 메뉴 -->
+    <div id="menu">
+        <ul class="nav">
+            <li><a href="http://127.0.0.1:8000/writing">편지 쓰기</a></li>
+            <li><a href="http://127.0.0.1:8000/letters">편지 목록</a></li>
+            <li><a href="http://127.0.0.1:8000/routine">편지 루틴</a></li>
+            {% if user.is_authenticated %}
+                <a href="{% url 'commons:mypage' %}">마이페이지</a>
+            {% else %}
+                <a href="{% url 'commons:login' %}">로그인</a>
+            {% endif %}
+            <li>
+                {% if user.is_authenticated %}
+                <a href="{% url 'commons:logout' %}">{{ user.username }} (로그아웃)</a>
+                
+                {% endif %}
+            </li>
+            <li><a href="{% url 'commons:signup' %}">회원가입</a></li>
+            
+        </ul>
+    </div>
 
     
     <div class="routine-buttons">
@@ -108,35 +138,7 @@
         <button onclick="goToWritingPage()">편지 작성하기</button>
     </div>
 
-    <h2>📅 편지 루틴 캘린더</h2>
-    <div id="calendar"></div> <!-- 캘린더 표시 영역 -->
-
-
-
-
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                height: 450,
-                aspectRatio: 2,
-                initialView: 'dayGridMonth',
-                stickyHeaderDates: true,
-                ihandleWindowResize : true, // 기본값 | Type : Boolean
-                locale: 'ko',
-                events: "/api/routines/", // Django에서 데이터 불러오기
-                
-                dateClick: function (info) {
-                    alert(info.dateStr + "에 편지를 작성하세요!");
-                }
-                
-            });
-            calendar.render();
-        });
-        
-    </script>
+    
     
 </body>
 </html>
