@@ -4,11 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-     <!-- JavaScript 연결 -->
-    <script src="{% static 'js/script.js' %}"></script>
-    <!-- FullCalendar CSS -->
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+ 
     <title>나에게 쓰는 편지</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ time }}">
     <style>
@@ -69,8 +65,12 @@
     <div class="routine-container">
         <h2>📅 편지 루틴 설정</h2>
         <form id="routineForm">
+            <div id="routine-title">
+                <label>루틴 이름:</label>
+                <input type="text" id="routineTitle">
+            </div>
             <label>반복 주기:</label>
-            <select id="routineType">
+            <select id="routine-type" name="routine_type" onchange="toggleDateOptions()">
                 <option value="weekly">매주</option>
                 <option value="monthly">매월</option>
             </select>
@@ -100,7 +100,7 @@
         </div>
     
         <label>시간 선택:</label>
-        <input type="time" id="routineTime">
+        <input type="time" id="routineTime" name="routine_time">
         
         <button type="submit">📬 루틴 추가</button>
     </form>
@@ -139,7 +139,7 @@
     </div>
 
     
-    
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
 

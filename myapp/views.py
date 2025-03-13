@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.http import JsonResponse
 from .models import Letters, LetterRoutine
 from .forms import LetterForm
+from commons.forms import UserForm
 from django.utils.timezone import now  # 현재 날짜 가져오기
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -82,7 +84,7 @@ def save_routine(request):
         routine_type = request.POST.get("routine_type")
         day_of_week = request.POST.get("day_of_week") if routine_type == "weekly" else None
         day_of_month = request.POST.get("day_of_month") if routine_type == "monthly" else None
-        time = request.POST.get("time")
+        time = request.POST.get("routine_time")
 
         LetterRoutine.objects.create(
             user=request.user,
@@ -132,3 +134,4 @@ def get_routine_events(request):
         })
 
     return JsonResponse(events, safe=False)
+

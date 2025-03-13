@@ -33,8 +33,10 @@ class Letters(models.Model):
     
 class LetterRoutine(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)  # 루틴 이름
     routine_type = models.CharField(max_length=10, choices=[('weekly', '매주'), ('monthly', '매월')])
-    day_of_week = models.CharField(max_length=10, null=True, blank=True)  # 매주의 경우 요일 저장
+    day_of_week = models.IntegerField(null=True, blank=True)  # 매주의 경우 요일 저장
+    day_of_month = models.IntegerField(null=True, blank=True)
     time = models.TimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 

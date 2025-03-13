@@ -60,3 +60,30 @@ function setMood(mood){
     alert("오늘의 기분이 '${mood}'로 설정되었습니다. 편지를 작성해보세요!");
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const tabs = document.querySelectorAll(".tabs li");
+    const tabContents = document.querySelectorAll("[data-tab-content]");
+    // 초기 상태: "오늘의 편지"만 보이게 설정
+    tabContents.forEach(content => content.classList.remove("active"));
+    document.querySelector("#today").classList.add("active");
+
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const targetId = tab.getAttribute("data-tab-target");
+            const targetContent = document.querySelector(targetId);
+            
+            if (!targetContent) {
+                console.error("탭 콘텐츠를 찾을 수 없습니다:", targetId);
+                return;
+            }
+
+            // 모든 탭 버튼에서 active 클래스 제거
+            tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+
+            // 모든 탭 콘텐츠 숨김
+            tabContents.forEach(content => content.classList.remove("active"));
+            targetContent.classList.add("active");
+        });
+    });
+});
