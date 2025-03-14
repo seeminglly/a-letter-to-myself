@@ -64,7 +64,8 @@
 
     <div class="routine-container">
         <h2>📅 편지 루틴 설정</h2>
-        <form id="routineForm">
+        <form id="routineForm" method="post"> 
+            {% csrf_token %}
             <div id="routine-title">
                 <label>루틴 이름:</label>
                 <input type="text" id="routineTitle">
@@ -101,16 +102,21 @@
     
         <label>시간 선택:</label>
         <input type="time" id="routineTime" name="routine_time">
-        
+        {{form.as_p}}
         <button type="submit">📬 루틴 추가</button>
     </form>
     </div>
 
     <div class="special-date-part">
-        <h2>📅 기념일 설정</h2>
-        <label for="special-date">날짜 선택:</label>
-        <input type="date" id="special-date">
-        <button onclick="saveSpecialDate()">저장</button>
+        <form id="special-date-form" method="post">
+            {% csrf_token %}
+            <h2>📅 기념일 설정</h2>
+            <label for="special-date-name">기념일 이름:</label>
+            <input type="text" id="special-date-name" name="name" placeholder="예: 생일, 결혼기념일" required>
+            <label for="special-date">날짜 선택:</label>
+            <input type="date" id="special-date" name="date">
+            <button type="submit">저장</button>
+        </form>
     </div>
 
     <div class="routine-list">

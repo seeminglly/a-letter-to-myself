@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import JsonResponse
-from .models import Letters, LetterRoutine
-from .forms import LetterForm
+from .models import Letters, LetterRoutine, SpecialDateRoutine
+from .forms import LetterForm,SpecialDateRoutineForm
 from commons.forms import UserForm
 from django.utils.timezone import now  # 현재 날짜 가져오기
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
@@ -78,6 +79,7 @@ def letter_json(request, letter_id):
 
 #편지 루틴 만들기
 @login_required
+@csrf_exempt
 def save_routine(request):
     days = range(1, 32) 
     if request.method == "POST":
@@ -86,14 +88,14 @@ def save_routine(request):
         day_of_month = request.POST.get("day_of_month") if routine_type == "monthly" else None
         time = request.POST.get("routine_time")
 
-        LetterRoutine.objects.create(
+        routine = LetterRoutine.objects.create(
             user=request.user,
             routine_type=routine_type,
             day_of_week=day_of_week,
             day_of_month=day_of_month,
             time=time
         )
-        return redirect("home")
+        return JsonResponse({"message":"루틴이 성공적으로 저장되었습니다!", "id":routine.id})
 
     return render(request, "myapp/routine.html",  {'days': days})
 
@@ -134,4 +136,24 @@ def get_routine_events(request):
         })
 
     return JsonResponse(events, safe=False)
+
+#기념일 루틴 추가 
+@login_required
+@csrf_exempt
+def save_specialDateRoutine(request):
+    if request.method == "POST":
+        form = SpecialDateRoutineForm(request.POST)
+        name = request.POST.get("name")
+        date = request.POST.get("date")
+       
+
+        special_routine = SpecialDateRoutine.objects.create(
+            user=request.user,
+            name = name,
+            date = date
+        )
+        return JsonResponse({"message":"루틴이 성공적으로 저장되었습니다!", "id":special_routine.id})
+
+    return render(request, "myapp/routine.html")
+
 
