@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import JsonResponse
 from .models import Letters, LetterRoutine, SpecialDateRoutine
-from .forms import LetterForm,SpecialDateRoutineForm
+from myapp.forms import LetterForm,SpecialDateRoutineForm
 from commons.forms import UserForm
 from django.utils.timezone import now  # 현재 날짜 가져오기
 from django.contrib.auth.decorators import login_required
@@ -36,9 +36,17 @@ def postbox(request):
 # 2️⃣ 작성된 편지 목록 보기
 def letter_list(request):
     letters = Letters.objects.all()
-    for letter in letters:
-        print(f"Letter ID: {letter.id}")
-    return render(request, 'myapp/letter_list.html', {'letters':letters})
+    past_letters = Letters.objects.filter(category="past")
+    today_letters = Letters.objects.filter(category="today")
+    future_letters = Letters.objects.filter(category="future")
+    
+    return render(request, 'myapp/letter_list.html', {
+        'letters': letters,
+        'past_letters': past_letters,
+        'today_letters': today_letters,
+        'future_letters': future_letters,
+    })
+
 
 def past_letters(request):
     """ 과거의 편지 목록 (오늘 이전 날짜) """
@@ -139,10 +147,8 @@ def get_routine_events(request):
 
 #기념일 루틴 추가 
 @login_required
-@csrf_exempt
 def save_specialDateRoutine(request):
     if request.method == "POST":
-        form = SpecialDateRoutineForm(request.POST)
         name = request.POST.get("name")
         date = request.POST.get("date")
        
@@ -152,8 +158,12 @@ def save_specialDateRoutine(request):
             name = name,
             date = date
         )
-        return JsonResponse({"message":"루틴이 성공적으로 저장되었습니다!", "id":special_routine.id})
+        return JsonResponse({"message":"기념일이 성공적으로 저장되었습니다!", "id":special_routine.id})
 
     return render(request, "myapp/routine.html")
 
+
+def routine_list(request):
+    routines = LetterRoutine.objects.filter(user=request.user)
+    return render(request, "myapp/routine.html", {"routines": routines})  # ✅ routines 데이터를 템플릿으로 전달
 

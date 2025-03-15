@@ -49,8 +49,8 @@
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'past' %}
-                        <li class="modalList" data-id="{{ letter.id }}">
-                            {{ letter.letter_date }} - {{ letter.title }}
+                        <li class="modalList" data-id="{{ letter.id }}"  style="list-style-type: none;">
+                            - {{ letter.title }}
                         </li>
                         {% endif %}
                     {% endfor %}

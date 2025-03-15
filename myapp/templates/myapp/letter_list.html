@@ -41,10 +41,12 @@
         }  
 
         /* 기본적으로 모든 콘텐츠 숨기기 */
-        [data-tab-content] {
-            display: none;
-        } 
-        
+        /* [data-tab-content] {
+            display: block;
+        }  */
+        .letters-section{
+            display: block;
+        }
         /* 활성화된 콘텐츠만 보이게 설정 */
         [data-tab-content].active {
             display: block ;
@@ -111,7 +113,7 @@
                     {% for letter in letters %}
                         {% if letter.category == 'past' %}
                         <li class="modalList" data-id="{{ letter.id }}" style="list-style-type: none;">
-                            {{ letter.letter_date }} - {{ letter.title }}
+                            {{ letter.title }}
                         </li>
                         {% endif %}
                     {% endfor %}

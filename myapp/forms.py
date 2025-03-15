@@ -1,5 +1,6 @@
 from django import forms
-from .models import Letters, LetterRoutine, SpecialDateRoutine
+from .models import Letters, LetterRoutine
+from .models import SpecialDateRoutine
 
 class LetterForm(forms.ModelForm):
     class Meta:
@@ -20,5 +21,5 @@ class LetterRoutineForm(forms.ModelForm):
 
 class SpecialDateRoutineForm(forms.ModelForm):
     class Meta:
-        model = SpecialDateRoutine
-        fields = ["name","date"]  # 필요한 필드만 포함
+        model = SpecialDateRoutine  # ✅ 올바른 모델 참조
+        fields = ["name", "date"]  # ✅ 필요한 필드만 포함 (user 제거)

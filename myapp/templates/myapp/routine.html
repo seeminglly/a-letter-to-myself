@@ -64,7 +64,7 @@
 
     <div class="routine-container">
         <h2>📅 편지 루틴 설정</h2>
-        <form id="routineForm" method="post"> 
+        <form method="post" action="{% url 'myapp:save_routine' %}">
             {% csrf_token %}
             <div id="routine-title">
                 <label>루틴 이름:</label>
@@ -108,11 +108,13 @@
     </div>
 
     <div class="special-date-part">
-        <form id="special-date-form" method="post">
+        <form id="special-date-form" method="post" action="{% url 'myapp:save_specialDateRoutine' %}">
             {% csrf_token %}
             <h2>📅 기념일 설정</h2>
-            <label for="special-date-name">기념일 이름:</label>
-            <input type="text" id="special-date-name" name="name" placeholder="예: 생일, 결혼기념일" required>
+            <div class="special-date-name">
+                <label for="special-date-name">기념일 이름:</label>
+                <input type="text" id="special-date-name" name="name" placeholder="예: 생일, 결혼기념일" required>
+            </div>
             <label for="special-date">날짜 선택:</label>
             <input type="date" id="special-date" name="date">
             <button type="submit">저장</button>
@@ -121,12 +123,19 @@
 
     <div class="routine-list">
         <h2>📖 내 편지 루틴</h2>
-        <ul>
-            <li>매주 월요일 - 18:00 <button class="delete-btn">🗑</button></li>
-            <li>매월 15일 - 20:00 <button class="delete-btn">🗑</button></li>
-        </ul>
+        {% if routines %}
+            <ul>
+                {% for routine in routines %}
+                    <li class="routineList" data-id="{{ routine.id }}" style="list-style-type: none;">
+                        {{ routine.title }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+        <p>📭 아직 등록된 루틴이 없습니다</p>
+        {% endif %}
     </div>
-    
+
 
     <div class="mood-list">
         <h2>😊 오늘 기분은? </h2>
