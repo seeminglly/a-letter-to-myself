@@ -167,11 +167,16 @@ def save_specialDateRoutine(request):
 
 
 def routine_list(request):
-    print(f"현재 로그인한 사용자: {request.user}")  # ✅ request.user 확인용 디버깅
+   #print(f"현재 로그인한 사용자: {request.user}")  # ✅ request.user 확인용 디버깅
     routines = LetterRoutine.objects.filter(user=request.user)
-    print(f"가져온 루틴 개수: {routines.count()}")  # ✅ 루틴 개수 확인
+   #print(f"가져온 루틴 개수: {routines.count()}")  # ✅ 루틴 개수 확인
+    specialDays = SpecialDateRoutine.objects.filter(user=request.user)
 
-    return render(request, "myapp/routine.html", {"routines": routines})
+    lists = {
+        "routines": routines,
+        "specialDays":specialDays
 
+    }
+    return render(request, "myapp/routine.html", lists)
 
 

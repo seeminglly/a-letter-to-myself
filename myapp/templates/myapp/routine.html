@@ -123,8 +123,8 @@
 
     <div class="routine-list">
         <h2>📖 내 편지 루틴</h2>
+        <p style="font-weight: bold;">데일리/먼슬리 루틴</p>
         {% if routines %}
-        <p>루틴 개수: {{ routines|length }}</p>  <!-- ✅ 루틴 개수 출력 -->
             <ul>
                 {% for routine in routines %}
                     <li class="routineList" data-id="{{ routine.id }}" style="list-style-type: none;">
@@ -139,6 +139,18 @@
         {% else %}
         <p>📭 아직 등록된 루틴이 없습니다</p>
         {% endif %}
+        <p style="font-weight: bold;">특별한 날</p>
+            {% if specialDays %}
+                <ul>
+                    {% for specialDay in specialDays %}
+                        <li class="specialList" style="list-style-type: none;">
+                            {{ specialDay.name }} - {{ specialDay.date }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+            <p>📭 아직 등록된 루틴이 없습니다</p>
+            {% endif %}
     </div>
 
 
