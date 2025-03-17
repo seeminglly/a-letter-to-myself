@@ -108,7 +108,29 @@ def save_routine(request):
             time=time
         )
         return JsonResponse({"message":"루틴이 성공적으로 저장되었습니다!", "id":routine.id})
-    return render(request, "myapp/routine.html",  {'days': days})
+    if request.method == "POST":
+        name = request.POST.get("name")
+        date = request.POST.get("date")
+       
+
+        special_routine = SpecialDateRoutine.objects.create(
+            user=request.user,
+            name = name,
+            date = date
+        )
+        return JsonResponse({"message":"기념일이 성공적으로 저장되었습니다!", "id":special_routine.id})
+     #print(f"현재 로그인한 사용자: {request.user}")  # ✅ request.user 확인용 디버깅
+    routines = LetterRoutine.objects.filter(user=request.user)
+   #print(f"가져온 루틴 개수: {routines.count()}")  # ✅ 루틴 개수 확인
+    specialDays = SpecialDateRoutine.objects.filter(user=request.user)
+
+    lists = {
+        "days":days,
+        "routines": routines,
+        "specialDays":specialDays
+
+    }
+    return render(request, "myapp/routine.html",  lists)
 
    
 def login_view(request):
@@ -149,34 +171,34 @@ def get_routine_events(request):
     return JsonResponse(events, safe=False)
 
 #기념일 루틴 추가 
-@login_required
-def save_specialDateRoutine(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        date = request.POST.get("date")
+# @login_required
+# def save_specialDateRoutine(request):
+#     if request.method == "POST":
+#         name = request.POST.get("name")
+#         date = request.POST.get("date")
        
 
-        special_routine = SpecialDateRoutine.objects.create(
-            user=request.user,
-            name = name,
-            date = date
-        )
-        return JsonResponse({"message":"기념일이 성공적으로 저장되었습니다!", "id":special_routine.id})
+#         special_routine = SpecialDateRoutine.objects.create(
+#             user=request.user,
+#             name = name,
+#             date = date
+#         )
+#         return JsonResponse({"message":"기념일이 성공적으로 저장되었습니다!", "id":special_routine.id})
 
-    return render(request, "myapp/routine.html")
+#     return render(request, "myapp/routine.html")
 
 
-def routine_list(request):
-   #print(f"현재 로그인한 사용자: {request.user}")  # ✅ request.user 확인용 디버깅
-    routines = LetterRoutine.objects.filter(user=request.user)
-   #print(f"가져온 루틴 개수: {routines.count()}")  # ✅ 루틴 개수 확인
-    specialDays = SpecialDateRoutine.objects.filter(user=request.user)
+# def routine_list(request):
+#    #print(f"현재 로그인한 사용자: {request.user}")  # ✅ request.user 확인용 디버깅
+#     routines = LetterRoutine.objects.filter(user=request.user)
+#    #print(f"가져온 루틴 개수: {routines.count()}")  # ✅ 루틴 개수 확인
+#     specialDays = SpecialDateRoutine.objects.filter(user=request.user)
 
-    lists = {
-        "routines": routines,
-        "specialDays":specialDays
+#     lists = {
+#         "routines": routines,
+#         "specialDays":specialDays
 
-    }
-    return render(request, "myapp/routine.html", lists)
+#     }
+#     return render(request, "myapp/routine.html", lists)
 
 
