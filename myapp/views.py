@@ -91,6 +91,9 @@ def letter_json(request, letter_id):
 def save_routine(request):
     days = range(1, 32) 
     if request.method == "POST":
+        title = request.POST.get("title")
+        if not title:  # ✅ title이 제공되지 않으면 기본값 설정
+            title = "기본 루틴 제목"
         routine_type = request.POST.get("routine_type")
         day_of_week = request.POST.get("day_of_week") if routine_type == "weekly" else None
         day_of_month = request.POST.get("day_of_month") if routine_type == "monthly" else None
@@ -98,13 +101,13 @@ def save_routine(request):
 
         routine = LetterRoutine.objects.create(
             user=request.user,
+            title = title,
             routine_type=routine_type,
             day_of_week=day_of_week,
             day_of_month=day_of_month,
             time=time
         )
         return JsonResponse({"message":"루틴이 성공적으로 저장되었습니다!", "id":routine.id})
-
     return render(request, "myapp/routine.html",  {'days': days})
 
    
@@ -164,6 +167,11 @@ def save_specialDateRoutine(request):
 
 
 def routine_list(request):
+    print(f"현재 로그인한 사용자: {request.user}")  # ✅ request.user 확인용 디버깅
     routines = LetterRoutine.objects.filter(user=request.user)
-    return render(request, "myapp/routine.html", {"routines": routines})  # ✅ routines 데이터를 템플릿으로 전달
+    print(f"가져온 루틴 개수: {routines.count()}")  # ✅ 루틴 개수 확인
+
+    return render(request, "myapp/routine.html", {"routines": routines})
+
+
 

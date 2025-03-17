@@ -12,7 +12,7 @@ urlpatterns = [
     path("save_routine/", save_routine, name = "save_routine"),
     path('signup/', views.signup, name='signup'),
     path('save_specialDateRoutine/', save_specialDateRoutine, name="save_specialDateRoutine" ),
-    path('routines/', routine_list, name="routine_list")
+    path("routine/", routine_list, name="routine_list"),
 ]
 
 

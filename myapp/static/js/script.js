@@ -27,7 +27,7 @@ function showCategory(category) {
     });
 
     // 선택된 카테고리만 보이도록 설정
-    document.getElementById(category).classList.add('active');
+    document.getElementsByClassName(category).classList.add('active');
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function toggleDateOptions() {
-    var routineType = document.getElementById("routine-type").value;
+    var routineType = document.getElementById("routine_type").value;
     document.getElementById("weekly-options").style.display = (routineType === "weekly") ? "block" : "none";
     document.getElementById("monthly-options").style.display = (routineType === "monthly") ? "block" : "none";
 }

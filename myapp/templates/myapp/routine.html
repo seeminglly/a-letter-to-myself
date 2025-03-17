@@ -23,7 +23,7 @@
 </head>
 <body>
     <header style="position: relative;">
-        <h1>A Letter To Myself</h1>
+        <h1><a href="{% url 'myapp:home' %}" style="text-decoration: none; "> Letter To Myself</a></h1>
     </header>
     <!-- 햄버거 버튼 -->
     <div class="btn">
@@ -67,11 +67,11 @@
         <form method="post" action="{% url 'myapp:save_routine' %}">
             {% csrf_token %}
             <div id="routine-title">
-                <label>루틴 이름:</label>
-                <input type="text" id="routineTitle">
+                <label for="title">루틴 이름:</label>
+                <input type="text" id="routineTitle" name="title">
             </div>
             <label>반복 주기:</label>
-            <select id="routine-type" name="routine_type" onchange="toggleDateOptions()">
+            <select id="routine_type" name="routine_type" onchange="toggleDateOptions()">
                 <option value="weekly">매주</option>
                 <option value="monthly">매월</option>
             </select>
@@ -124,10 +124,15 @@
     <div class="routine-list">
         <h2>📖 내 편지 루틴</h2>
         {% if routines %}
+        <p>루틴 개수: {{ routines|length }}</p>  <!-- ✅ 루틴 개수 출력 -->
             <ul>
                 {% for routine in routines %}
                     <li class="routineList" data-id="{{ routine.id }}" style="list-style-type: none;">
-                        {{ routine.title }}
+                        {% if routine.routine_type == 'weekly' %}
+                            {{ routine.title }} - {{ routine.day_of_week }} : {{ routine.time }}
+                        {% else %}
+                            {{ routine.title }} - {{ routine.day_of_month }} : {{ routine.time }}
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>
