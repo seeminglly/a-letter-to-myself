@@ -204,16 +204,153 @@ h2 {
     background-color: #bbb;
 }
 
-/* 기본적으로 모든 카테고리 숨김 */
-.category-section {
-    display: none;
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
+
+        body{
+        background-color: #333aa5;
+        }
+
+.formContainer{
+  position: relative;
+  height:450px;
+  width:400px;
+  margin:auto;
+  position:fixed;
+  border-radius:8px;
+  overflow:hidden;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  .logo{
+    height:150px;
+    width:150px;
+    margin:auto;
+    font-size:140px;
+    text-align:center;
+    margin-bottom:20px;
+    color:#ffffff;
+    font-family: 'Roboto', sans-serif 
+  }
+  .input-group{
+    position:relative;
+    margin-bottom:20px;
+    i.fa{
+      position:absolute;
+      top: 0;
+      bottom: 0;
+      margin:auto;
+      height:20px;
+      width:20px;
+      text-align:center;
+      line-height:20px;
+      font-size:14px;
+      color:#ffffff;
+      left:4px;
+    }
+    input{
+      width:100%;
+      /* //margin-bottom:20px; */
+      box-sizing:border-box;
+      border:none;
+      height:30px;
+      outline:none;
+      background-color: transparent;
+      border-bottom:1px solid white;
+      font-family: 'Roboto', sans-serif;
+      color:#ffffff;
+      padding-left:30px;
+      &::placeholder{
+        color:#ffffff;
+      }
+    }
+  }
+  button[type="submit"]{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:50px;
+    background-color: #ffffff;
+    font-size:16px;
+    text-transform:uppercase;
+    margin-top:20px;
+    font-weight:500;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing:4px;
+    color:#f82363;
+  }
 }
 
-/* 편지 루틴 */
-.routine-buttons button {
-    text-align: center;
+.signin{
+  position:relative;
+  top: 0;
+  transition:all ease 0.5s;
+  form{
+  background-color: #f82363;
+  padding:32px 20px;
+  } 
+}
+.signup{
+  position:relative;
+  top:0;
+  transition:all ease 0.5s;
+  form{
+    background-color: #333aa5;
+    padding:34px 20px;
+    .logo{
+      font-size:50px;
+      height:60px;
+      width:60px;
+    }
+    button[type="submit"]{
+      color:#333aa5;
+    }
+  }
 }
 
-.letters-section{
-    display: none;
+
+
+
+/*toggle link*/
+#signup{
+  position:relative;
+  display:block;
+  text-align:center;
+  padding:20px 10px;
+  text-decoration:none;
+  text-transform:uppercase;
+  background-color: #333aa5;
+  color:#ffffff;
+  font-family: 'Roboto', sans-serif 
+}
+#signup.active{
+  background-color: #f82363;
+}
+/*toogle classes*/
+
+.signin.moveup{
+  top:-87.5%;
+}
+.signup.moveup{
+  top: -87.5%;
+}
+
+
+/*link*/
+.info{
+  position:fixed;
+  bottom:10px;
+  left: 10px;
+  right: 10px;
+  margin:auto;
+  text-align:center;
+  color:#fff;
+  font-weight:600;
+  width:200px;
+  font-size:1.2rem;
+  a{
+   font-size:3rem; 
+    display:block;
+    color:#fff;
+  }
 }

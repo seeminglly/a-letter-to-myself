@@ -1,34 +1,36 @@
-// document.addEventListener("DOMContentLoaded", function () {
-//     showCategory('today');
-// });
 
-// // function showCategory(category){
-// //     document.querySelectorAll('.category-section').forEach(section => {
-// //         section.style.display = 'none';
-// //     });
 
-// //     document.getElementById(category).style.display = 'block';
-// // }
+function showCategory(event) {
+    let targetTab = event.target;  // ✅ 클릭한 탭 요소 가져오기
+    if (!targetTab.dataset.tabTarget) return;  // ✅ data-tab-target이 없으면 종료
 
-// function showCategory(category){
-//     if (document.querySelectorAll('.category-section.past').forEach(section => {
-//         section.style.display = 'none';
-//     }));
-// }
+    let activeTab = document.querySelector(".tabs .active");  // ✅ 현재 활성화된 탭 찾기
+    if (activeTab) {
+        activeTab.classList.remove("active");  // ✅ 기존 활성화된 탭에서 active 제거
+    }
+    targetTab.classList.add("active");  // ✅ 새로 클릭한 탭을 활성화
 
-document.addEventListener("DOMContentLoaded", function () {
-    showCategory('today'); // 기본값: 오늘의 편지 보이기
-});
-
-function showCategory(category) {
-    // 모든 편지 리스트 숨김 처리
-    document.querySelectorAll('.category').forEach(el => {
-        el.classList.remove('active');
+    // ✅ 모든 편지 섹션 숨기기
+    document.querySelectorAll("[data-tab-content]").forEach((section) => {
+        section.style.display = "none";
     });
 
-    // 선택된 카테고리만 보이도록 설정
-    document.getElementsByClassName(category).classList.add('active');
+    // ✅ 클릭한 탭과 연결된 편지 섹션만 표시
+    let targetSection = document.querySelector(targetTab.dataset.tabTarget);
+    if (targetSection) {
+        targetSection.style.display = "block";
+    }
 }
+document.addEventListener("DOMContentLoaded", function() {
+    let defaultTab = document.querySelector(".tabs .active");  // ✅ 기본 활성화된 탭 찾기
+    if (defaultTab) {
+        let targetSection = document.querySelector(defaultTab.dataset.tabTarget);
+        if (targetSection) {
+            targetSection.style.display = "block";  // ✅ 기본 섹션 표시
+        }
+    }
+});
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const menuButton = document.querySelector(".btn"); // 햄버거 버튼
@@ -56,10 +58,18 @@ function toggleDateOptions() {
     document.getElementById("monthly-options").style.display = (routineType === "monthly") ? "block" : "none";
 }
 
-function setMood(mood){
+function redirectToWritePage(){
     alert("오늘의 기분이 '${mood}'로 설정되었습니다. 편지를 작성해보세요!");
+    
+    var mood = document.getElementById("mood").value;
+    
 }
-
+function add_routine(){
+    alert("루틴이 저장되었습니다!");
+}
+function add_specialDay(){
+    alert("기념일이 저장되었습니다!")
+}
 document.addEventListener("DOMContentLoaded", function () {
     const tabs = document.querySelectorAll(".tabs li");
     const tabContents = document.querySelectorAll("[data-tab-content]");

@@ -24,63 +24,40 @@
         h1,h2,ul,button, label, p{
             font-family: 'KCC-Sonkeechung';
         }
+        
     </style>
 </head>
 <body>
     <header style="position: relative;">
         <h1>A Letter To Myself</h1>
     </header>
-    <!-- 햄버거 버튼 -->
-    <div class="btn">
-        <img src="{% static 'images/poststamp.png' %}" alt="우표스티커 UI" width="50px">
-    </div>
+   
 
-    <!-- 메뉴 바깥을 클릭하면 닫힘 -->
-    <div class="page_cover"></div>
-
-    <!-- 사이드 메뉴 -->
-    <div id="menu">
-        <ul class="nav">
-            <li><a href="http://127.0.0.1:8000/writing">편지 쓰기</a></li>
-            <li><a href="http://127.0.0.1:8000/letters">편지 목록</a></li>
-            <li><a href="http://127.0.0.1:8000/routine">편지 루틴</a></li>
-            {% if user.is_authenticated %}
-                <a href="{% url 'commons:mypage' %}">마이페이지</a>
-            {% else %}
-                <a href="{% url 'commons:login' %}">로그인</a>
-            {% endif %}
-            <li>
-                {% if user.is_authenticated %}
-                <a href="{% url 'commons:logout' %}">{{ user.username }} (로그아웃)</a>
-                
-                {% endif %}
-            </li>
-            <li><a href="{% url 'commons:signup' %}">회원가입</a></li>
-            
-        </ul>
-    </div>
-    <div class="container my-3">
-        <form method="post" action="{% url 'commons:login' %}">
+    <div class="formContainer">
+        <div class="signin">
+          <form method="post" action="{% url 'commons:login' %}">
             {% csrf_token %}
-            {% include "form_errors.html" %}
-            <div class="mb-3">
-                <label for="username">사용자ID</label>
-                <input type="text" class="form-control" name="username" id="username"
-                    value="{{ form.username.value|default_if_none:'' }}">
+            <div class="logo">
+                <img src="{% static 'images/stamp.png' %}" alt="왁스실링 UI" width="100px">
             </div>
-            <div class="mb-3">
-                <label for="password">비밀번호</label>
-                <input type="password" class="form-control" name="password" id="password"
-                    value="{{ form.password.value|default_if_none:'' }}">
+            <div class="input-group">
+              <i class="fa fa-envelope"></i>
+              <input type="text" placeholder="UserID" name="username" id="username"
+              value="{{ form.username.value|default_if_none:'' }}">
             </div>
-            <button type="submit" class="btn btn-primary" style="left: 50%; top: 25%;">로그인</button>
-        </form>
-    </div>
+            
+            <div class="input-group">
+              <i class="fa fa-unlock-alt"></i>
+              <input type="password" placeholder="Password" class="form-control" name="password" id="password"
+              value="{{ form.password.value|default_if_none:'' }}">
+            </div>
+            <button type="submit">Sign In</button>
+          </form>
+          <a href="{% url 'commons:signup' %}" id="signup">sign up</a>
+        </div>
 
-    
 
-
-    
+ 
 </body>
 </html>
 

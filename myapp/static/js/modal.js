@@ -2,6 +2,21 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".modalList").forEach(item => {
         item.addEventListener("click", function () {
+            let openDate = new Date(this.dataset.openDate);  // ✅ 편지 open_date 가져오기
+            let today = new Date();  // ✅ 현재 날짜 가져오기
+
+            today.setHours(0, 0, 0, 0);  // ✅ 시간을 00:00:00으로 설정하여 비교
+            openDate.setHours(0, 0, 0, 0);  
+            if (today < openDate) {
+                alert("🚫 이 편지는 아직 열 수 없습니다! \n열 수 있는 날짜: " + this.dataset.openDate);
+                return;  // ✅ 모달창 열기 차단
+            }
+
+            // ✅ 편지 열기 가능할 경우 모달창 표시
+            let modal = document.getElementById("letterModal");
+            document.getElementById("modalTitle").innerText = this.innerText;
+            modal.style.display = "block";
+            
             const letterId = this.getAttribute("data-id");
             console.log("Clicked Letter ID:", letterId);  // ✅ letterId 값 출력
             openLetter(letterId);

@@ -38,19 +38,15 @@
             background: slateblue;
             color: #fff;
         }
+        font-weight: bolder;
+        font-size: large;
         }  
 
         /* 기본적으로 모든 콘텐츠 숨기기 */
         /* [data-tab-content] {
             display: block;
         }  */
-        .letters-section{
-            display: block;
-        }
-        /* 활성화된 콘텐츠만 보이게 설정 */
-        [data-tab-content].active {
-            display: block ;
-        }
+        
 
       
     </style>
@@ -101,25 +97,25 @@
     
     <div class="letter-container">
         <ul class="tabs">
-            <li data-tab-target="#past">과거</li>
-            <li data-tab-target="#today" class="active">오늘</li>
-            <li data-tab-target="#future">미래</li>
+            <li data-tab-target="#past" onclick="showCategory(event)">과거</li>
+            <li data-tab-target="#today" class="active" onclick="showCategory(event)">오늘</li>
+            <li data-tab-target="#future" onclick="showCategory(event)">미래</li>
         </ul>
         <div class="letters-section">
-            <div id="past" data-tab-content>
+            <div id="past" data-tab-content style="display: none;">  <!-- ✅ 기본 숨김 -->
                 <h1>📜 과거의 편지</h1>
                 <p style="font-size: 20px; font-family: 'KCC-Sonkeechung';">어린 시절의 나에게 보내는 위로</p>
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'past' %}
                         <li class="modalList" data-id="{{ letter.id }}" style="list-style-type: none;">
-                            {{ letter.title }}
+                            - {{ letter.title }}
                         </li>
                         {% endif %}
                     {% endfor %}
                 </ul>
             </div>
-            <div id="today" data-tab-content class="active">
+            <div id="today" data-tab-content class="active" style="display: block;">  <!-- ✅ 기본 표시 -->
                 <h1>📩 오늘의 편지</h1>
                 <p style="font-size: 20px; font-family: 'KCC-Sonkeechung';">지금의 나에게 보내는 응원</p>
                 <ul>
@@ -132,13 +128,16 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div id="future" data-tab-content>
+            <div id="future" data-tab-content style="display: none;">  <!-- ✅ 기본 숨김 -->
                 <h1>🔮 미래의 편지</h1>
                 <p style="font-size:20px; font-family: 'KCC-Sonkeechung';">미래의 나에게 전하는 다짐</p>
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'future' %}
-                        <li class="modalList" data-id="{{ letter.id }}" style="list-style-type: none;">
+                        <li class="modalList"
+                            data-id="{{ letter.id }}"
+                            data-open-date="{{ letter.open_date }}"
+                            style="list-style-type: none;">
                             {{ letter.letter_date }} - {{ letter.title }}
                         </li>
                         {% endif %}

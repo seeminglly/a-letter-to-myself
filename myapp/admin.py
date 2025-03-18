@@ -5,9 +5,9 @@ from .models import Letters, LetterRoutine, SpecialDateRoutine
 
 @admin.register(Letters)
 class LettersAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'open_date', 'created_at')
-    search_fields = ('title', 'content')
-    list_filter = ('category', 'open_date')
+    list_display = ('title', 'category', 'open_date', 'created_at','mood')
+    search_fields = ('title', 'content','mood')
+    list_filter = ('category', 'open_date','mood')
 
 @admin.register(LetterRoutine)
 class LetterRoutineAdmin(admin.ModelAdmin):

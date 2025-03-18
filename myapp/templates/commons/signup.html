@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -10,8 +11,9 @@
     <script src="{% static 'js/script.js' %}"></script>
     <!-- FullCalendar CSS -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    <title>나에게 쓰는 편지</title>
+    <title>나에게 쓰는 편지</title> 
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ time }}">
+    <!-- <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ time }}"> -->
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
         
@@ -29,64 +31,56 @@
 <body>
     <header style="position: relative;">
         <h1>A Letter To Myself</h1>
+        <!-- 🔥 에러 메시지 표시 -->
+        {% if form.errors %}
+        <div class="error-messages">
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
     </header>
-    <!-- 햄버거 버튼 -->
-    <div class="btn">
-        <img src="{% static 'images/poststamp.png' %}" alt="우표스티커 UI" width="50px">
-    </div>
-
-    <!-- 메뉴 바깥을 클릭하면 닫힘 -->
-    <div class="page_cover"></div>
-
-    <!-- 사이드 메뉴 -->
-    <div id="menu">
-        <ul class="nav">
-            <li><a href="http://127.0.0.1:8000/writing">편지 쓰기</a></li>
-            <li><a href="http://127.0.0.1:8000/letters">편지 목록</a></li>
-            <li><a href="http://127.0.0.1:8000/routine">편지 루틴</a></li>
-            {% if user.is_authenticated %}
-                <a href="{% url 'commons:mypage' %}">마이페이지</a>
-            {% else %}
-                <a href="{% url 'commons:login' %}">로그인</a>
-            {% endif %}
-            <li>
-                {% if user.is_authenticated %}
-                <a href="{% url 'commons:logout' %}">{{ user.username }} (로그아웃)</a>
-                
-                {% endif %}
-            </li>
-            <li><a href="{% url 'commons:signup' %}">회원가입</a></li>
-            
-        </ul>
+   
+    <div class="formContainer">
+        <div class="signup">
+            <form method="post" action="{% url 'commons:signup' %}">
+                {% csrf_token %}
+                <div class="logo">
+                    <img src="{% static 'images/stamp.png' %}" alt="왁스실링 UI" width="70px">
+                </div>
+    
+    
+                <div class="input-group">
+                    <i class="fa fa-user"></i>
+                    <input type="text" placeholder="Username" class="form-control" name="username" id="username"
+                           value="{{ form.username.value|default_if_none:'' }}">
+                </div>
+    
+                <div class="input-group">
+                    <i class="fa fa-envelope"></i>
+                    <input type="text" class="form-control" placeholder="Email" name="email" id="email"
+                           value="{{ form.email.value|default_if_none:'' }}">
+                </div>
+    
+                <div class="input-group">
+                    <i class="fa fa-unlock-alt"></i>
+                    <input type="password" placeholder="Password" class="form-control" name="password1" id="password1">
+                </div>
+    
+                <div class="input-group">
+                    <i class="fa fa-unlock-alt"></i>
+                    <input type="password" placeholder="Retype-Password" class="form-control" name="password2" id="password2">
+                </div>
+    
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
     </div>
     
-    <div class="container my-3">
-        <form method="post" action="{% url 'commons:signup' %}">
-            {% csrf_token %}
-            {% include "form_errors.html" %}
-            <div class="mb-3">
-                <label for="username">사용자 이름</label>
-                <input type="text" class="form-control" name="username" id="username"
-                    value="{{ form.username.value|default_if_none:'' }}">
-            </div>
-            <div class="mb-3">
-                <label for="password1">비밀번호</label>
-                <input type="password" class="form-control" name="password1" id="password1"
-                    value="{{ form.password1.value|default_if_none:'' }}">
-            </div>
-            <div class="mb-3">
-                <label for="password2">비밀번호 확인</label>
-                <input type="password" class="form-control" name="password2" id="password2"
-                    value="{{ form.password2.value|default_if_none:'' }}">
-            </div>
-            <div class="mb-3">
-                <label for="email">이메일</label>
-                <input type="text" class="form-control" name="email" id="email"
-                    value="{{ form.email.value|default_if_none:'' }}">
-            </div>
-            <button type="submit" class="btn btn-primary" style="left: 50%; top: 25%; width: 70px; height: 30px;">생성하기</button>
-        </form>
-    </div>
 
 
     

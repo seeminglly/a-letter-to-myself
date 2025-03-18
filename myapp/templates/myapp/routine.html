@@ -103,7 +103,7 @@
         <label>시간 선택:</label>
         <input type="time" id="routineTime" name="routine_time">
         {{form.as_p}}
-        <button type="submit">📬 루틴 추가</button>
+        <button type="submit" onclick="add_routine()">📬 루틴 추가</button>
     </form>
     </div>
 
@@ -117,7 +117,7 @@
             </div>
             <label for="special-date">날짜 선택:</label>
             <input type="date" id="special-date" name="date">
-            <button type="submit">저장</button>
+            <button type="submit" onclick="add_specialDay()">저장</button>
         </form>
     </div>
 
@@ -157,7 +157,7 @@
     <div class="mood-list">
         <h2>😊 오늘 기분은? </h2>
         <label for="mood">오늘의 기분을 선택하세요:</label>
-        <select name="mood" id="mood">
+        <select name="mood" id="mood" onchange="redirectToWritePage()">
             <option value="happy">😊 행복</option>
             <option value="sad">😢 슬픔</option>
             <option value="angry">😡 화남</option>
@@ -166,10 +166,6 @@
         </select>
     </div>
     
-    <div class="writing">
-        <button onclick="goToWritingPage()">편지 작성하기</button>
-    </div>
-
     
     <script src="{% static 'js/script.js' %}"></script>
 </body>

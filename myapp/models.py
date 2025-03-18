@@ -12,11 +12,14 @@ MOOD_CHOICES = [
     ('sad', '😢 슬픔'),
     ('angry', '😡 화남'),
     ('worried', '🤔 고민'),
+    ('diary', '📝 일기')
 ]
 
-
+def get_default_user():
+    return User.objects.first().id  # ✅ 가장 첫 번째 사용자 ID를 기본값으로 설정
 # Create your models here.
 class Letters(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,default=get_default_user)
     id = models.AutoField(primary_key=True)  # 기본 키 설정
     title = models.CharField(max_length=200)  # 편지 제목
     content = models.TextField()  # 편지 내용
@@ -26,7 +29,7 @@ class Letters(models.Model):
     category = models.CharField(max_length=20,
                                 choices=CATEGORIES,
                                 default='오늘')
-    mood = models.CharField(max_length=10, choices=MOOD_CHOICES, default='diary')
+    mood = models.CharField(max_length=10, choices=MOOD_CHOICES, default='happy')
     
     def __str__(self):
         return self.title

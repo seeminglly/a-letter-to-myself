@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime, timedelta
 
 
 # Create your views here.
@@ -20,7 +21,8 @@ def write_letter(request):
     if request.method == 'POST':
         form = LetterForm(request.POST, request.FILES)
         if form.is_valid():
-            letter = form.save(commit=False)
+            letter = form.save(commit=False)  # ✅ 데이터 저장 전에 추가 설정
+            letter.user = request.user  # 🔥 작성자를 현재 로그인한 사용자로 설정
             if not letter.open_date:  # open_date가 없으면 오늘 날짜로 설정
                 letter.open_date = now().date()
             letter.save()
@@ -34,6 +36,7 @@ def postbox(request):
     return render(request, 'myapp/postbox.html')
 
 # 2️⃣ 작성된 편지 목록 보기
+@login_required
 def letter_list(request):
     letters = Letters.objects.all()
     past_letters = Letters.objects.filter(category="past")
@@ -47,13 +50,14 @@ def letter_list(request):
         'future_letters': future_letters,
     })
 
-
+@login_required
 def past_letters(request):
     """ 과거의 편지 목록 (오늘 이전 날짜) """
     today = now().date()
     letters = Letters.objects.filter(open_date__lt=today)
     return render(request, 'myapp/letter_past.html', {'letters': letters})
 
+@login_required
 def today_letters(request):
     """ 오늘의 편지 목록 """
     today = now().date()  # 오늘 날짜 가져오기
@@ -67,7 +71,7 @@ def today_letters(request):
 
     return render(request, 'myapp/letter_today.html', {'letters': letters})
 
-
+@login_required
 def future_letters(request):
     """ 미래의 편지 목록 (오늘 이후 날짜) """
     today = now().date()
@@ -75,6 +79,7 @@ def future_letters(request):
     return render(request, 'myapp/letter_future.html', {'letters': letters})
 
 #개별 편지 상세보기api
+@login_required
 def letter_json(request, letter_id):
     letter = get_object_or_404(Letters, id=letter_id)
     data = {
@@ -89,11 +94,12 @@ def letter_json(request, letter_id):
 @login_required
 @csrf_exempt
 def save_routine(request):
-    days = range(1, 32) 
-    if request.method == "POST":
-        title = request.POST.get("title")
-        if not title:  # ✅ title이 제공되지 않으면 기본값 설정
-            title = "기본 루틴 제목"
+    days = range(1, 32)
+    routine = None  # ✅ 기본값 설정
+    special_routine = None  # ✅ 기본값 설정
+
+    if "title" in request.POST:
+        title = request.POST.get("title") or "기본 루틴 제목"
         routine_type = request.POST.get("routine_type")
         day_of_week = request.POST.get("day_of_week") if routine_type == "weekly" else None
         day_of_month = request.POST.get("day_of_month") if routine_type == "monthly" else None
@@ -101,36 +107,36 @@ def save_routine(request):
 
         routine = LetterRoutine.objects.create(
             user=request.user,
-            title = title,
+            title=title,
             routine_type=routine_type,
             day_of_week=day_of_week,
             day_of_month=day_of_month,
             time=time
         )
-        return JsonResponse({"message":"루틴이 성공적으로 저장되었습니다!", "id":routine.id})
-    if request.method == "POST":
+
+    elif "name" in request.POST:
         name = request.POST.get("name")
         date = request.POST.get("date")
-       
 
         special_routine = SpecialDateRoutine.objects.create(
             user=request.user,
-            name = name,
-            date = date
+            name=name,
+            date=date
         )
-        return JsonResponse({"message":"기념일이 성공적으로 저장되었습니다!", "id":special_routine.id})
-     #print(f"현재 로그인한 사용자: {request.user}")  # ✅ request.user 확인용 디버깅
+
+    # ✅ 내 루틴 보기
     routines = LetterRoutine.objects.filter(user=request.user)
-   #print(f"가져온 루틴 개수: {routines.count()}")  # ✅ 루틴 개수 확인
     specialDays = SpecialDateRoutine.objects.filter(user=request.user)
 
     lists = {
-        "days":days,
+        "days": days,
         "routines": routines,
-        "specialDays":specialDays
-
+        "specialDays": specialDays,
+        "routine_id": routine.id if routine else None,  # ✅ `None` 체크 추가
+        "special_routine_id": special_routine.id if special_routine else None  # ✅ `None` 체크 추가
     }
-    return render(request, "myapp/routine.html",  lists)
+
+    return render(request, "myapp/routine.html", lists)
 
    
 def login_view(request):
@@ -157,16 +163,54 @@ def signup(request):
         form = UserForm()
     return render(request, 'commons/signup.html', {'form': form})
 
-def get_routine_events(request):
-    """편지 루틴 정보를 JSON 데이터로 반환"""
-    routines = LetterRoutine.objects.all()
-    events = []
+# @login_required
+# def get_routine_events(request):
+#     """편지 루틴 정보를 JSON 데이터로 반환"""
+#     routines = LetterRoutine.objects.all()
+#     events = []
 
+#     for routine in routines:
+#         events.append({
+#             "title": f"📜 {routine.routine_type} 루틴",
+#             "start": routine.date.strftime("%Y-%m-%d")
+#         })
+
+#     return JsonResponse(events, safe=False)
+WEEKDAYS = {
+    "Monday": 0, "Tuesday": 1, "Wednesday": 2, "Thursday": 3, "Friday": 4, "Saturday": 5, "Sunday": 6
+}
+@login_required
+def get_routine_events(request):
+    """ 사용자의 편지 루틴을 JSON 데이터로 반환 """
+    user = request.user
+    routines = LetterRoutine.objects.filter(user=user)
+
+    events = []
     for routine in routines:
-        events.append({
-            "title": f"📜 {routine.routine_type} 루틴",
-            "start": routine.date.strftime("%Y-%m-%d")
-        })
+        if routine.routine_type == "weekly":
+            today = datetime.today()
+            weekday_str = routine.day_of_week  # ✅ 문자열 요일 (예: "Monday")
+            
+            if weekday_str not in WEEKDAYS:
+                continue  # ✅ 유효하지 않은 요일 값이 있으면 스킵
+            
+            weekday_num = WEEKDAYS[weekday_str]  # ✅ 요일을 숫자로 변환 (0~6)
+            next_date = today + timedelta(days=(weekday_num - today.weekday() + 7) % 7)  # ✅ 다음 해당 요일 찾기
+
+            # 주간 루틴 → 매주 같은 요일에 발생
+            events.append({
+                "title": routine.title,
+                "start": next_date.strftime("%Y-%m-%d"),  # ✅ YYYY-MM-DD 형식
+                "allDay": True
+            })
+        elif routine.routine_type == "monthly":
+            # 월간 루틴 → 매월 특정 날짜에 발생
+            for month in range(1, 13):  # 1월~12월 반복
+                events.append({
+                    "title": routine.title,
+                    "start": f"2025-{month:02d}-{routine.day_of_month:02d}",  # ✅ YYYY-MM-DD 형식
+                    "allDay": True
+                })
 
     return JsonResponse(events, safe=False)
 
