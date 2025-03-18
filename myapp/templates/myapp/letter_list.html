@@ -32,10 +32,10 @@
             }
         }
         .tabs li.active {
-        color: slateblue;
-        border-bottom: 2px solid slateblue;
+        color: #b3907A;
+        border-bottom: 2px solid #b3907A;
         &:hover {
-            background: slateblue;
+            background: #b3907A;
             color: #fff;
         }
         font-weight: bolder;
@@ -87,7 +87,7 @@
 
     <!-- 모달창 -->
     <div id="letterModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 5px 10px rgba(0,0,0,0.3);">
-        <div id="popup" style="background-color: #cce5ff; padding: 20px; border-radius: 10px;">
+        <div id="popup" style= "padding: 20px; border-radius: 10px;">
             <h2 id="modalTitle"></h2>
             <p id="modalDate"></p>
             <p id="modalContent"></p>
@@ -135,11 +135,11 @@
                     {% for letter in letters %}
                         {% if letter.category == 'future' %}
                         <li class="modalList"
-                            data-id="{{ letter.id }}"
-                            data-open-date="{{ letter.open_date }}"
-                            style="list-style-type: none;">
-                            {{ letter.letter_date }} - {{ letter.title }}
-                        </li>
+                        data-id="{{ letter.id }}"
+                        data-open-date="{{ letter.open_date }}"
+                        style="list-style-type: none;">
+                        {{ letter.letter_date }} - {{ letter.title }}
+                    </li>
                         {% endif %}
                     {% endfor %}
                 </ul>

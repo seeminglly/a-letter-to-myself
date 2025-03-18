@@ -24,32 +24,68 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-async function openLetter(letterId) {
+// async function openLetter(letterId) {
+//     try {
+//         if (!letterId || letterId === "undefined") {
+//             console.error("에러: 잘못된 letterId 값");
+//             return;
+//         }
+
+//         console.log("Fetching letter with ID:", letterId);
+
+//         const response = await fetch(`/api/letters/${letterId}/`);
+//         if (!response.ok) {
+//             throw new Error("데이터를 가져오는 데 실패했습니다.");
+//         }
+
+//         const letter = await response.json();
+
+//         document.getElementById("modalTitle").textContent = letter.title;
+//         document.getElementById("modalDate").textContent = "📅 " + letter.letter_date;
+//         document.getElementById("modalContent").textContent = letter.content;
+
+//         document.getElementById("modalOverlay").style.display = "block";
+//         document.getElementById("letterModal").style.display = "block";
+//     } catch (error) {
+//         console.error("에러 발생:", error);
+//     }
+// }
+
+function openLetter(letterId) {
     try {
         if (!letterId || letterId === "undefined") {
-            console.error("에러: 잘못된 letterId 값");
+            console.error("🚨 에러: 잘못된 letterId 값");
             return;
         }
 
-        console.log("Fetching letter with ID:", letterId);
+        console.log("✅ Fetching letter with ID:", letterId);
 
-        const response = await fetch(`/api/letters/${letterId}/`);
-        if (!response.ok) {
-            throw new Error("데이터를 가져오는 데 실패했습니다.");
-        }
+        fetch(`/api/letters/${letterId}/`)
+            .then(response => response.json())
+            .then(letter => {
+                console.log("✅ 받은 데이터:", letter);  // 🔥 JSON 데이터 콘솔 출력
 
-        const letter = await response.json();
+                document.getElementById("modalTitle").textContent = letter.title;
+                document.getElementById("modalDate").textContent = "📅 " + letter.letter_date;
+                document.getElementById("modalContent").textContent = letter.content;
 
-        document.getElementById("modalTitle").textContent = letter.title;
-        document.getElementById("modalDate").textContent = "📅 " + letter.letter_date;
-        document.getElementById("modalContent").textContent = letter.content;
+                // ✅ 모달창 표시 확인
+                let overlay = document.getElementById("modalOverlay");
+                let modal = document.getElementById("letterModal");
 
-        document.getElementById("modalOverlay").style.display = "block";
-        document.getElementById("letterModal").style.display = "block";
+                overlay.style.display = "block";
+                modal.style.display = "block";
+
+                console.log("✅ 모달창 표시됨:", overlay.style.display, modal.style.display);
+            })
+            .catch(error => {
+                console.error("❌ 데이터 로딩 실패:", error);
+            });
     } catch (error) {
-        console.error("에러 발생:", error);
+        console.error("🚨 에러 발생:", error);
     }
 }
+
 
 function closeModal() {
     document.getElementById("modalOverlay").style.display = "none";

@@ -8,6 +8,7 @@
 body {
     font-family: 'KCC-Sonkeechung';
     text-align: center;
+    background-color: #EFE7DA;
     
 }
 
@@ -16,18 +17,18 @@ header {
 }
 /* 모든 a 태그 스타일 강제 적용 */
 a, a:link, a:visited, a:-webkit-any-link {
-    color: black !important;
+    color: white ;
     text-decoration: none !important;
 }
 
 /* 마우스 오버 시 */
 a:hover {
-    color: #ff6600 !important; /* 주황색으로 변경 */
+    color: #b3907A !important; /* 주황색으로 변경 */
 }
 
 /* 클릭 시 */
 a:active {
-    color: red !important;
+    color: #b3907A !important;
 }
 
 
@@ -43,7 +44,7 @@ html.open {
     top: 0;
     left: -220px; /* ✅ 너비에 맞게 조정 */
     z-index: 10;
-    background-color: rgb(164, 120, 100) !important;
+    background: #c1b6a3 !important;
     text-align: center;
     font-weight: bold;
     transition: all 0.3s ease-in-out;
@@ -66,14 +67,13 @@ html.open {
     text-align: center;
     font-weight: bold;
     text-decoration: none;
-    color: white !important; /* ✅ 링크를 흰색으로 */
+    
     transition: background 0.3s;
 }
 
 /* 메뉴 안의 링크 마우스 오버 시 */
 #menu ul.nav li a:hover {
-    background: #eee;
-    color: black !important; /* ✅ 가독성 증가 */
+    color: #805a46 !important; /* ✅ 가독성 증가 */
 }
 
 
@@ -84,7 +84,7 @@ html.open {
     position: fixed;
     top: 0;
     right: 0;
-    background-color: rgba(0, 0, 0, 0.4);
+    /* background-color: rgba(0, 0, 0, 0.4); */
     z-index: 4;
     display: none;
 }
@@ -109,7 +109,7 @@ html.open {
 
 .hero {
     padding: 50px;
-    background-color: #f4f4f4;
+    background-color: #EFE7DA;
 }
 
 .mailbox-img {
@@ -164,10 +164,10 @@ h2 {
     padding-top: 100px;
     left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
+    width: 500px;
+    height: 500px;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.7); /* 반투명한 배경색 */
+    /* background-color: rgba(0, 0, 0, 0.7); 반투명한 배경색 */
    
 }
 
@@ -178,7 +178,7 @@ h2 {
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
-    background: #ffffff;
+    
     border-radius: 20px;
     display: block;
 }
@@ -203,12 +203,6 @@ h2 {
 .category-buttons button:hover {
     background-color: #bbb;
 }
-
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
-
-        body{
-        background-color: #333aa5;
-        }
 
 .formContainer{
   position: relative;
@@ -277,7 +271,7 @@ h2 {
     font-weight:500;
     font-family: 'Roboto', sans-serif;
     letter-spacing:4px;
-    color:#f82363;
+    color: #b3907A;;
   }
 }
 
@@ -286,7 +280,7 @@ h2 {
   top: 0;
   transition:all ease 0.5s;
   form{
-  background-color: #f82363;
+  background-color: #E1DACA;
   padding:32px 20px;
   } 
 }
@@ -295,7 +289,7 @@ h2 {
   top:0;
   transition:all ease 0.5s;
   form{
-    background-color: #333aa5;
+    background-color: #E1DACA;
     padding:34px 20px;
     .logo{
       font-size:50px;
@@ -303,7 +297,7 @@ h2 {
       width:60px;
     }
     button[type="submit"]{
-      color:#333aa5;
+      color:#b3907A;
     }
   }
 }
@@ -319,12 +313,12 @@ h2 {
   padding:20px 10px;
   text-decoration:none;
   text-transform:uppercase;
-  background-color: #333aa5;
+  background-color: #b3907A;
   color:#ffffff;
   font-family: 'Roboto', sans-serif 
 }
 #signup.active{
-  background-color: #f82363;
+  background-color: #E1DACA;
 }
 /*toogle classes*/
 
