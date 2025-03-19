@@ -23,8 +23,7 @@ def write_letter(request):
         if form.is_valid():
             letter = form.save(commit=False)  # ✅ 데이터 저장 전에 추가 설정
             letter.user = request.user  # 🔥 작성자를 현재 로그인한 사용자로 설정
-            if not letter.open_date:  # open_date가 없으면 오늘 날짜로 설정
-                letter.open_date = now().date()
+            letter.category = 'future' # 기본적으로 미래 카테고리로 분류
             letter.save()
             return redirect('letter_list')  # 편지 목록 페이지로 이동
     else:
@@ -50,33 +49,6 @@ def letter_list(request):
         'future_letters': future_letters,
     })
 
-@login_required
-def past_letters(request):
-    """ 과거의 편지 목록 (오늘 이전 날짜) """
-    today = now().date()
-    letters = Letters.objects.filter(open_date__lt=today)
-    return render(request, 'myapp/letter_past.html', {'letters': letters})
-
-@login_required
-def today_letters(request):
-    """ 오늘의 편지 목록 """
-    today = now().date()  # 오늘 날짜 가져오기
-    letters = Letters.objects.filter(open_date=today)
-    
-    print(f"오늘 날짜: {today}")
-    print(f"오늘의 편지 개수: {letters.count()}")
-
-    for letter in letters:
-        print(f"Letter ID: {letter.id}, Title: {letter.title}, Open Date: {letter.open_date}")
-
-    return render(request, 'myapp/letter_today.html', {'letters': letters})
-
-@login_required
-def future_letters(request):
-    """ 미래의 편지 목록 (오늘 이후 날짜) """
-    today = now().date()
-    letters = Letters.objects.filter(open_date__gt=today)
-    return render(request, 'myapp/letter_future.html', {'letters': letters})
 
 #개별 편지 상세보기api
 @login_required

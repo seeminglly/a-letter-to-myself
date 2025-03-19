@@ -50,7 +50,7 @@ def analyze_emotion(letter):
     response = openai.ChatCompletion.create(
         model="gpt-4o",
         messages=[
-            {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자의 편지를 분석하고 감정을 happy, sad, angry, worried, neutral 중 하나로 분류해."},
+            {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자의 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 happy, sad, angry, worried, neutral 중 하나로 분류해."},
             {"role": "user", "content": letter}
         ],
         max_tokens=10

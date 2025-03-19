@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 CATEGORIES = (
     ('past','과거'),
@@ -15,6 +16,7 @@ MOOD_CHOICES = [
     ('diary', '📝 일기')
 ]
 
+
 def get_default_user():
     return User.objects.first().id  # ✅ 가장 첫 번째 사용자 ID를 기본값으로 설정
 # Create your models here.
@@ -28,11 +30,26 @@ class Letters(models.Model):
     open_date = models.DateField()  # 편지를 열 수 있는 날짜 (선택)
     category = models.CharField(max_length=20,
                                 choices=CATEGORIES,
-                                default='오늘')
+                                default='future')
     mood = models.CharField(max_length=10, choices=MOOD_CHOICES, default='happy')
-    
+
+    def save(self, *args, **kwargs):
+        """ 개봉 일자에 따라 자동으로 카테고리 설정 """
+        today = now().date()
+
+        if self.open_date < today:
+            self.category = 'past'  # 개봉일이 지났다면 과거
+        elif self.open_date == today:
+            self.category = 'today'  # 개봉일이 오늘이라면 오늘
+        else:
+            self.category = 'future'  # 개봉일이 아직 안 됐다면 미래
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return self.title
+        return f"{self.title} - {self.category}"
+    
+
     
 class LetterRoutine(models.Model):
     id = models.AutoField(primary_key=True)

@@ -87,7 +87,7 @@
 
     <!-- 모달창 -->
     <div id="letterModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 5px 10px rgba(0,0,0,0.3);">
-        <div id="popup" style= "padding: 20px; border-radius: 10px;">
+        <div id="popup" style= "padding: 20px; border-radius: 10px;  font-family: 'KCC-Sonkeechung'";>
             <h2 id="modalTitle"></h2>
             <p id="modalDate"></p>
             <p id="modalContent"></p>
@@ -104,7 +104,7 @@
         <div class="letters-section">
             <div id="past" data-tab-content style="display: none;">  <!-- ✅ 기본 숨김 -->
                 <h1>📜 과거의 편지</h1>
-                <p style="font-size: 20px; font-family: 'KCC-Sonkeechung';">어린 시절의 나에게 보내는 위로</p>
+                <p style="font-size: 13px;">지나온 편지에는 어떤 말이 담겨있을까요?</p>
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'past' %}
@@ -117,7 +117,7 @@
             </div>
             <div id="today" data-tab-content class="active" style="display: block;">  <!-- ✅ 기본 표시 -->
                 <h1>📩 오늘의 편지</h1>
-                <p style="font-size: 20px; font-family: 'KCC-Sonkeechung';">지금의 나에게 보내는 응원</p>
+                <p style="font-size:13px;">오늘 열어볼 수 있는 편지에는 어떤 위로와 응원이 적혀있을까요?</p>
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'today' %}
@@ -130,7 +130,7 @@
             </div>
             <div id="future" data-tab-content style="display: none;">  <!-- ✅ 기본 숨김 -->
                 <h1>🔮 미래의 편지</h1>
-                <p style="font-size:20px; font-family: 'KCC-Sonkeechung';">미래의 나에게 전하는 다짐</p>
+                <p style="font-size:13px;">미래의 나에게 전하는 다짐</p>
                 <ul>
                     {% for letter in letters %}
                         {% if letter.category == 'future' %}
@@ -138,7 +138,7 @@
                         data-id="{{ letter.id }}"
                         data-open-date="{{ letter.open_date }}"
                         style="list-style-type: none;">
-                        {{ letter.letter_date }} - {{ letter.title }}
+                        {{ letter.letter_date }} - {{ letter.title }} : {{ letter.status }}
                     </li>
                         {% endif %}
                     {% endfor %}

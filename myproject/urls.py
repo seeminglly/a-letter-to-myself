@@ -30,9 +30,6 @@ urlpatterns = [
     path('writing/', views.write_letter, name="writing"),
     path('postbox/', views.postbox, name='postbox'),
     path('letters/', views.letter_list, name='letter_list'),  # 작성한 편지 목록
-    path('letters/past/', views.past_letters, name='past_letters'),  # ✅ 과거 편지 목록
-    path('letters/today/', views.today_letters, name='today_letters'),  # ✅ 오늘 편지 목록
-    path('letters/future/', views.future_letters, name='future_letters'),  # ✅ 미래 편지 목록
     path('routine/', views.save_routine , name="routine"),
     path('accounts/', include('django.contrib.auth.urls')),  
    
