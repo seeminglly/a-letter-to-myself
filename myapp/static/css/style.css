@@ -4,9 +4,16 @@
     font-weight: normal;
     font-style: normal;
 }
-
+@font-face {
+  font-family: 'Apple SD Gothic Neo';
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo-Light.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo-Light.ttf') format('truetype');
+}
 body {
-    font-family: 'KCC-Sonkeechung';
+    font-family: 'Apple SD Gothic Neo';
     text-align: center;
     background-color: #EFE7DA;
     

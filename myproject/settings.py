@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import openai
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -137,3 +139,7 @@ LOGOUT_REDIRECT_URL = '/'  # 로그아웃 후 이동할 페이지
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+
+# load_dotenv()
+
+# OPENAI_API_KEY = os.getenv("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")
