@@ -14,5 +14,14 @@
 <li>편지 목록에서 편지 삭제 기능 추가</li>
  <br><br>
 가능하다면 추가할 기능)
-ai편지 감정 분석, 
+ai편지 감정 분석 -> ok
 소셜로그인 및 회원가입 구현
+
+## requirements.txt 사용방법
+배포환경에 패키지 설치 
+pip install -r requirements.txt
+
+현재 설치된 모든 패키지를 파일에 저장 때
+pip freeze > requirements.txt
+
+수동으로 requirements.txt에 추가한 패키지를 저장하는 것도 가능!!
