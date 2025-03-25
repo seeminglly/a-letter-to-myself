@@ -32,6 +32,8 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const menuButton = document.querySelector(".btn"); // 햄버거 버튼
     const menu = document.getElementById("menu"); // 사이드 메뉴

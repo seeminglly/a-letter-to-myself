@@ -59,31 +59,65 @@
             
         </ul>
     </div>
-    
-    <h2>{{ user.username }}님의 마이페이지</h2>
-    <p>프로필 사진</p>
-    <p>이메일: {{ user.email }}</p>
-    <p>가입 날짜: {{ user.date_joined }}</p>
-    
 
-<div class="chatbot-section">
-    <h2>📜 당신의 감정 분석 결과</h2>
-    {% if most_frequent_mood %}
-        <p>가장 많이 느낀 감정은 <strong>{{ most_frequent_mood }}</strong> 입니다.</p>
-        {% else %}
-        <p>아직 기록된 감정 데이터가 없습니다.</p>
-    {% endif %}
-    <!-- 감정 데이터를 시각화하는 그래프 -->
-    <canvas id="moodChart"></canvas>
+    <!-- 전체 wrapper -->
+<div class="mypage-container">
 
-   
-    <p style="white-space: pre-line;">{{ comfort_message }}</p>
-    <div class="recommendations">
-        <h3>🎬 추천 영화 & 🎵 추천 음악</h3>
-        <p style="white-space: pre-line;">{{ recommendations }}</p>
+  <!-- 프로필 카드 -->
+  <div class="profile-card">
+    <div class="profile-banner"></div> <!-- 배경 이미지 -->
+    <div class="profile-info">
+      <img src="{% static 'images/basicProfile.png' %}" class="profile-img">
+      <h2>{{ user.username }}</h2>
+      <p class="email">{{ user.email }}</p>
+    
+      <p class="intro">한줄소개 또는 MBTI 등</p>
     </div>
-</div>
+  </div>
 
+  <!-- 활동 통계 -->
+  <div class="activity-stats">
+    <div class="stat-box"><strong>{{ letter_count }}</strong><p>편지</p></div>
+    <div class="stat-box"><strong>{{ most_frequent_mood }}</strong><p>최근 나의 감정</p></div>
+    <div class="stat-box"><strong>{{ routine_count }}</strong><p>루틴</p></div>
+  </div>
+
+  <!-- 보관함 or 섹션 탭 -->
+  <div class="section-tabs">
+    <button class="tab-btn active" data-target="letters">감정분석</button>
+    <button class="tab-btn" data-target="calendar">루틴 캘린더</button>
+    <button class="tab-btn" data-target="profile">프로필</button>
+  </div>
+
+  <!-- 탭 콘텐츠 -->
+  <div class="section-content">
+
+    <div id="letters" class="tab-section active">
+        <div class="chatbot-section">
+            <h2>📜 당신의 감정 분석 결과</h2>
+            {% if most_frequent_mood %}
+                <p>가장 많이 느낀 감정은 <strong>{{ most_frequent_mood }}</strong> 입니다.</p>
+                {% else %}
+                <p>아직 기록된 감정 데이터가 없습니다.</p>
+            {% endif %}
+             감정 데이터를 시각화하는 그래프 
+            <canvas id="moodChart"></canvas>
+        
+           
+            <p style="white-space: pre-line;">{{ comfort_message }}</p>
+            <div class="recommendations">
+                <h3>🎬 추천 영화 & 🎵 추천 음악</h3>
+                <p style="white-space: pre-line;">{{ recommendations }}</p>
+            </div>
+        </div>  
+    
+
+    
+
+    
+
+  </div>
+</div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -125,11 +159,7 @@
     });
     
 </script>
-<div class="routine_calendar">
-    <br><br><br>
-    <h2>📅 편지 루틴 캘린더</h2>
-    <div id="calendar"></div> <!-- 캘린더 표시 영역 -->
-</div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -141,6 +171,7 @@
                 stickyHeaderDates: true,
                 ihandleWindowResize : true, // 기본값 | Type : Boolean
                 locale: 'ko',
+                backgroundColor: "#00b9ba",
                 events: "/api/routines/",  // ✅ Django API에서 편지 루틴 데이터 불러오기
                 eventColor: "#ff6600",  // 이벤트 색상 지정
                 eventClick: function(info) {  // ✅ 이벤트 클릭 시 상세 정보 표시
@@ -152,10 +183,27 @@
                 }
                 
             });
+            
             calendar.render();
         });
         
     </script>
+
+<script>
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabSections = document.querySelectorAll(".tab-section");
+  
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", function () {
+        tabButtons.forEach(b => b.classList.remove("active"));
+        tabSections.forEach(s => s.classList.remove("active"));
+  
+        this.classList.add("active");
+        document.getElementById(this.dataset.target).classList.add("active");
+      });
+    });
+  </script>
+  
     
 </body>
 </html>

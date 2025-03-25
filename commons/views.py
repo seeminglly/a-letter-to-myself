@@ -40,10 +40,9 @@ def signup(request):
 load_dotenv()
 
 # 환경 변수에서 API 키 가져오기
-api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# OpenAI API 키 설정
-openai.api_key = api_key
+
 
 def analyze_emotion(letter):
     """사용자가 작성한 편지를 감정 분석하여 감정을 반환"""
@@ -106,6 +105,9 @@ def mypage(request):
         comfort_message = "아직 감정 분석된 편지가 없습니다."
         recommendations = "편지를 작성하면 감정 분석 후 추천 영화와 음악을 제공해 드립니다."
 
+    user = request.user
+    letter_count = user.letters.count()  # related_name을 활용
+    routine_count = user.routines.count()
     # Django 템플릿으로 데이터 전달
     context = {
         "user": request.user,
@@ -114,7 +116,9 @@ def mypage(request):
         "mood_counts": mood_counts,  # 감정 통계 데이터
         "most_frequent_mood": most_frequent_mood,  # 가장 많이 나타난 감정
         "comfort_message": comfort_message,  # 위로 메시지
-        "recommendations": recommendations  # 추천 영화 & 음악
+        "recommendations": recommendations, # 추천 영화 & 음악
+        'letter_count': letter_count,
+        'routine_count':routine_count
     }
 
     return render(request, 'commons/mypage.html', context)

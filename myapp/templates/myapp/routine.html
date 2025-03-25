@@ -128,9 +128,9 @@
                 {% for routine in routines %}
                     <li class="routineList" data-id="{{ routine.id }}" style="list-style-type: none;">
                         {% if routine.routine_type == 'weekly' %}
-                            {{ routine.title }} - {{ routine.day_of_week }} : {{ routine.time }}
+                            {{ routine.title }} -매주 {{ routine.day_of_week }} : {{ routine.time }}
                         {% else %}
-                            {{ routine.title }} - {{ routine.day_of_month }} : {{ routine.time }}
+                            {{ routine.title }} - {{ routine.day_of_month }}일: {{ routine.time }}
                         {% endif %}
                     </li>
                 {% endfor %}

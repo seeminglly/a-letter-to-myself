@@ -35,18 +35,22 @@ def postbox(request):
     return render(request, 'myapp/postbox.html')
 
 # 2️⃣ 작성된 편지 목록 보기
-@login_required
+@login_required(login_url='commons:login') #로그인 안 하면 로그인 페이지로 이동
 def letter_list(request):
     letters = Letters.objects.all()
-    past_letters = Letters.objects.filter(category="past")
-    today_letters = Letters.objects.filter(category="today")
-    future_letters = Letters.objects.filter(category="future")
+
+    today = datetime.now().date()
     
+    for letter in letters: #'오늘'날짜 기준으로 카테고리 변경
+        if letter.open_date == today:
+             letter.category = 'today'
+        elif letter.open_date >today:
+            letter.category = 'future'
+        else:
+            letter.category = 'past'
+
     return render(request, 'myapp/letter_list.html', {
         'letters': letters,
-        'past_letters': past_letters,
-        'today_letters': today_letters,
-        'future_letters': future_letters,
     })
 
 
@@ -58,12 +62,12 @@ def letter_json(request, letter_id):
         'id':letter.id,
         'title': letter.title,
         'content': letter.content,
-        'letter_date': letter.open_date.strftime("%Y-%m-%d"),
+        'letter_date': letter.open_date.strftime("%Y-%m-%d"), #개봉 가능 날짜
     }
     return JsonResponse(data)
 
 #편지 루틴 만들기
-@login_required
+@login_required(login_url='commons:login')
 @csrf_exempt
 def save_routine(request):
     days = range(1, 32)
@@ -156,25 +160,31 @@ def get_routine_events(request):
     """ 사용자의 편지 루틴을 JSON 데이터로 반환 """
     user = request.user
     routines = LetterRoutine.objects.filter(user=user)
+    special_dates = SpecialDateRoutine.objects.filter(user=user)
 
+    today = datetime.today().date()
     events = []
+
     for routine in routines:
         if routine.routine_type == "weekly":
-            today = datetime.today()
-            weekday_str = routine.day_of_week  # ✅ 문자열 요일 (예: "Monday")
-            
+            weekday_str = routine.day_of_week  # 예: "Monday"
             if weekday_str not in WEEKDAYS:
-                continue  # ✅ 유효하지 않은 요일 값이 있으면 스킵
-            
-            weekday_num = WEEKDAYS[weekday_str]  # ✅ 요일을 숫자로 변환 (0~6)
-            next_date = today + timedelta(days=(weekday_num - today.weekday() + 7) % 7)  # ✅ 다음 해당 요일 찾기
+                continue  # 유효하지 않은 요일이면 건너뜀
 
-            # 주간 루틴 → 매주 같은 요일에 발생
-            events.append({
-                "title": routine.title,
-                "start": next_date.strftime("%Y-%m-%d"),  # ✅ YYYY-MM-DD 형식
-                "allDay": True
-            })
+            weekday_num = WEEKDAYS[weekday_str]
+
+            # 다음 해당 요일 (가장 가까운 날짜)
+            next_date = today + timedelta(days=(weekday_num - today.weekday() + 7) % 7)
+
+            # 예: 12주 동안 반복
+            for i in range(12):
+                event_date = next_date + timedelta(weeks=i)
+
+                events.append({
+                    "title": routine.title,
+                    "start": event_date.strftime("%Y-%m-%d"),
+                    "allDay": True
+                })
         elif routine.routine_type == "monthly":
             # 월간 루틴 → 매월 특정 날짜에 발생
             for month in range(1, 13):  # 1월~12월 반복
@@ -183,6 +193,14 @@ def get_routine_events(request):
                     "start": f"2025-{month:02d}-{routine.day_of_month:02d}",  # ✅ YYYY-MM-DD 형식
                     "allDay": True
                 })
+        for special in special_dates:
+            events.append({
+                "title":f"🎉 {special.name}",
+                "start": special_dates.strftime("%YY-%m-%d"),
+                "allDay":True,
+                "color":"#3399ff"
+            })
+
 
     return JsonResponse(events, safe=False)
 

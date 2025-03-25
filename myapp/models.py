@@ -21,7 +21,7 @@ def get_default_user():
     return User.objects.first().id  # ✅ 가장 첫 번째 사용자 ID를 기본값으로 설정
 # Create your models here.
 class Letters(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,default=get_default_user)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,default=get_default_user, related_name="letters") 
     id = models.AutoField(primary_key=True)  # 기본 키 설정
     title = models.CharField(max_length=200)  # 편지 제목
     content = models.TextField()  # 편지 내용
@@ -53,7 +53,7 @@ class Letters(models.Model):
     
 class LetterRoutine(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name="routines")
     title = models.CharField(max_length=200, default="편지 루틴")  # 루틴 이름
     routine_type = models.CharField(max_length=10, choices=[('weekly', '매주'), ('monthly', '매월')],null=True, blank=True)  # ✅ 빈 값 허용)
     day_of_week = models.CharField(null=True, blank=True)  # 매주의 경우 요일 저장

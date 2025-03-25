@@ -303,7 +303,65 @@ h2 {
       height:60px;
       width:60px;
     }
-    button[type="submit"]{
+    button[type="submit"]{.mypage-container {
+      max-width: 800px;
+      margin: auto;
+      background: #f9f9f9;
+      padding: 2rem;
+    }
+    
+    .profile-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .profile-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+    
+    .activity-stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 1rem 0;
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    
+    .section-tabs {
+      display: flex;
+      justify-content: space-around;
+      margin: 1rem 0;
+    }
+    
+    .tab-btn {
+      flex: 1;
+      padding: 1rem;
+      background: white;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .tab-btn.active {
+      border-bottom: 2px solid #ff3366;
+      font-weight: bold;
+    }
+    
+    .tab-section {
+      display: none;
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    
+    .tab-section.active {
+      display: block;
+    }
+    
       color:#b3907A;
     }
   }
@@ -337,21 +395,61 @@ h2 {
 }
 
 
-/*link*/
-.info{
-  position:fixed;
-  bottom:10px;
-  left: 10px;
-  right: 10px;
-  margin:auto;
-  text-align:center;
-  color:#fff;
-  font-weight:600;
-  width:200px;
-  font-size:1.2rem;
-  a{
-   font-size:3rem; 
-    display:block;
-    color:#fff;
-  }
+.mypage-container {
+  max-width: 800px;
+  margin: auto;
+  background: #f9f9f9;
+  padding: 2rem;
+}
+
+.profile-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.profile-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.activity-stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 1rem 0;
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.section-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin: 1rem 0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 1rem;
+  background: white;
+  border: none;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  border-bottom: 2px solid #ff3366;
+  font-weight: bold;
+}
+
+.tab-section {
+  display: none;
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.tab-section.active {
+  display: block;
 }
