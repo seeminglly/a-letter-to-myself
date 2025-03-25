@@ -166,33 +166,31 @@ def get_routine_events(request):
     events = []
 
     for routine in routines:
+        # 예시: 주간 루틴 처리
         if routine.routine_type == "weekly":
-            weekday_str = routine.day_of_week  # 예: "Monday"
-            if weekday_str not in WEEKDAYS:
-                continue  # 유효하지 않은 요일이면 건너뜀
+            weekday = routine.day_of_week
+            if weekday:
+                weekday_num = WEEKDAYS[weekday]  # 요일 -> 숫자
+                next_date = today + timedelta(days=(weekday_num - today.weekday() + 7) % 7)
+                for i in range(12):  # 12주 반복
+                    events.append({
+                        "title": routine.title,
+                        "start": (next_date + timedelta(weeks=i)).strftime("%Y-%m-%d"),
+                        "allDay": True
+                    })
 
-            weekday_num = WEEKDAYS[weekday_str]
-
-            # 다음 해당 요일 (가장 가까운 날짜)
-            next_date = today + timedelta(days=(weekday_num - today.weekday() + 7) % 7)
-
-            # 예: 12주 동안 반복
-            for i in range(12):
-                event_date = next_date + timedelta(weeks=i)
-
-                events.append({
-                    "title": routine.title,
-                    "start": event_date.strftime("%Y-%m-%d"),
-                    "allDay": True
-                })
+        # 예시: 월간 루틴 처리
         elif routine.routine_type == "monthly":
-            # 월간 루틴 → 매월 특정 날짜에 발생
-            for month in range(1, 13):  # 1월~12월 반복
-                events.append({
-                    "title": routine.title,
-                    "start": f"2025-{month:02d}-{routine.day_of_month:02d}",  # ✅ YYYY-MM-DD 형식
-                    "allDay": True
-                })
+            for month in range(1, 13):
+                try:
+                    events.append({
+                        "title": routine.title,
+                        "start": f"2025-{month:02d}-{routine.day_of_month:02d}",
+                        "allDay": True
+                    })
+                except:
+                    continue
+
         for special in special_dates:
             events.append({
                 "title":f"🎉 {special.name}",
@@ -202,7 +200,13 @@ def get_routine_events(request):
             })
 
 
-    return JsonResponse(events, safe=False)
+    return JsonResponse([
+        {
+            "title": "📝 테스트 루틴",
+            "start": "2025-04-01",
+            "allDay": True
+        }
+    ], safe=False)
 
 #기념일 루틴 추가 
 # @login_required

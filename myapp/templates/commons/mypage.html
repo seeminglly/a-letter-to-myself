@@ -14,16 +14,43 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ time }}">
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
-        
-        /* @font-face {
-        font-family: 'KCC-Sonkeechung';
-        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/KCC-Sonkeechung.woff2') format('woff2');
-        font-weight: normal;
-        font-style: normal;
-            }
-        h1,h2,ul,button, label, p{
-            font-family: 'KCC-Sonkeechung';
-        } */
+        /* FullCalendar 전체 캘린더 배경 */
+#calendar {
+  background-color: #f7f7f7;  /* 연회색 */
+  padding: 1rem;
+  border-radius: 10px;
+  min-height: 400px; /* 또는 height 지정 */
+}
+
+
+
+/* 날짜 셀 하나하나의 배경 */
+.fc-daygrid-day {
+  background-color: #736464; /* 기본 흰색으로 두되 border로 구분감 주기 */
+  border: 1px solid #ddd;
+}
+
+/* 이벤트 표시 부분 */
+.fc-event {
+  background-color: #ff6600 !important;
+  color: white !important;
+  border: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* 헤더 스타일 */
+.fc-toolbar-title {
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.fc-col-header-cell {
+  background-color: #9c9595;
+  font-weight: bold;
+}
+
     </style>
 </head>
 <body>
@@ -109,8 +136,16 @@
                 <h3>🎬 추천 영화 & 🎵 추천 음악</h3>
                 <p style="white-space: pre-line;">{{ recommendations }}</p>
             </div>
-        </div>  
-    
+        </div>
+    </div>
+    <!-- 📅 캘린더 탭 -->
+    <div id="calendar" class="tab-section">
+        <div class="routine_calendar">
+        <h2>📅 편지 루틴 캘린더</h2>
+        <div id="calendarArea"></div>  <!-- ✅ 이곳에 렌더링 -->
+        </div>
+    </div>
+  
 
     
 
@@ -160,36 +195,49 @@
     
 </script>
 
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                height: 450,
-                aspectRatio: 2,
-                initialView: 'dayGridMonth',
-                stickyHeaderDates: true,
-                ihandleWindowResize : true, // 기본값 | Type : Boolean
-                locale: 'ko',
-                backgroundColor: "#00b9ba",
-                events: "/api/routines/",  // ✅ Django API에서 편지 루틴 데이터 불러오기
-                eventColor: "#ff6600",  // 이벤트 색상 지정
-                eventClick: function(info) {  // ✅ 이벤트 클릭 시 상세 정보 표시
-                    alert("편지 루틴: " + info.event.title + "\n날짜: " + info.event.start.toISOString().split("T")[0]);
-                
-                // dateClick: function (info) {
-                //     alert(info.dateStr + "에 편지를 작성하세요!");
-                // }
-                }
-                
-            });
-            
-            calendar.render();
-        });
-        
-    </script>
-
 <script>
+   document.addEventListener('DOMContentLoaded', function () {
+  const tabButtons = document.querySelectorAll(".tab-btn");
+  const tabSections = document.querySelectorAll(".tab-section");
+  const calendarEl = document.getElementById('calendarArea');
+
+  let calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    locale: 'ko',
+    events: '/api/routines/',   // ✅ Django API에서 루틴 데이터 받아오는 주소
+    height: 550,
+    eventColor: '#ff6600'
+  });
+
+  // 탭 전환 이벤트
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", function () {
+      tabButtons.forEach(b => b.classList.remove("active"));
+      tabSections.forEach(s => s.classList.remove("active"));
+
+      this.classList.add("active");
+      const targetId = this.dataset.target;
+      document.getElementById(targetId).classList.add("active");
+
+      // calendar 탭이 열릴 때만 render() 실행
+      if (targetId === "calendar") {
+        setTimeout(() => {
+          calendar.render();
+        }, 10);
+      }
+    });
+  });
+
+  // 최초 로딩 시 calendar 탭이 보이면 render()
+  if (document.getElementById("calendar").classList.contains("active")) {
+    calendar.render();
+  }
+});
+
+  </script>
+  
+
+<!-- <script>
     const tabButtons = document.querySelectorAll(".tab-btn");
     const tabSections = document.querySelectorAll(".tab-section");
   
@@ -202,7 +250,7 @@
         document.getElementById(this.dataset.target).classList.add("active");
       });
     });
-  </script>
+  </script> -->
   
     
 </body>
