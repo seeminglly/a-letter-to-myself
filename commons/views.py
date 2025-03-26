@@ -16,8 +16,6 @@ import os
 from dotenv import load_dotenv
 
 
-#openai.api_key = "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"
-
 def logout_view(request):
     logout(request)
     return redirect('/')
@@ -39,7 +37,7 @@ def signup(request):
 
 load_dotenv()
 
-# 환경 변수에서 API 키 가져오기
+# .env에서 API 키 가져오기
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
