@@ -32,8 +32,7 @@
 
 /* 이벤트 표시 부분 */
 .fc-event {
-  background-color: #ff6600 !important;
-  color: white !important;
+  background-color: #fc9cac !important;
   border: none;
   padding: 2px 4px;
   border-radius: 4px;
@@ -195,6 +194,7 @@
     
 </script>
 
+#캘린더
 <script>
    document.addEventListener('DOMContentLoaded', function () {
   const tabButtons = document.querySelectorAll(".tab-btn");
@@ -206,7 +206,7 @@
     locale: 'ko',
     events: '/api/routines/',   // ✅ Django API에서 루틴 데이터 받아오는 주소
     height: 550,
-    eventColor: '#ff6600'
+    eventColor: '#ffc0cb'
   });
 
   // 탭 전환 이벤트

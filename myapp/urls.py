@@ -11,7 +11,6 @@ urlpatterns = [
     path('api/routines/', views.get_routine_events, name='get_routine_events'),
     path("routine/",save_routine, name = "save_routine"),
     path('signup/', views.signup, name='signup'),
-    path("api/routines/", get_routine_events, name="get_routine_events"), 
 ]
 
 
