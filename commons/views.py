@@ -5,12 +5,12 @@ import openai
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
-from commons.forms import UserForm, ProfilePictureForm
+from commons.forms import UserForm, ProfileForm, ProfilePictureForm
 from .forms import ProfilePictureForm
 from django.shortcuts import render
 from django.db.models import Count
 from myapp.models import Letters
-from .models import UserProfile
+from .models import Profile, UserProfile
 import os
 
 from dotenv import load_dotenv
@@ -25,6 +25,10 @@ def signup(request):
         form = UserForm(request.POST)
         if form.is_valid():
             user = form.save()  # ✅ 사용자 저장 후, 반환된 객체 사용
+
+            profile = Profile.objects.create(user=user)  # 새로운 Profile 객체 생성
+            UserProfile.objects.create(user=user, profile=profile)  # 새로운 UserProfile 객체 생성 및 연결
+
             login(request, user)  # ✅ 자동 로그인
             return redirect('/')  # ✅ 회원가입 후 홈으로 이동
         else:
@@ -82,6 +86,7 @@ def mypage(request):
     
     # 사용자 프로필 불러오기
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    profile = Profile.objects.get(user=request.user)
 
     # 가장 많이 기록된 감정 가져오기
     mood_counts = Letters.objects.filter(user=request.user).values("mood").annotate(count=Count("mood")).order_by("-count")
@@ -110,6 +115,7 @@ def mypage(request):
     context = {
         "user": request.user,
         "user_profile": user_profile,
+        "profile" : profile,
         "user_letters": user_letters,  # 사용자의 모든 편지 리스트
         "mood_counts": mood_counts,  # 감정 통계 데이터
         "most_frequent_mood": most_frequent_mood,  # 가장 많이 나타난 감정
@@ -122,16 +128,30 @@ def mypage(request):
     return render(request, 'commons/mypage.html', context)
 
 @login_required
-def update_profile_picture(request):
-    user_profile = request.user.userprofile  # ✅ 현재 사용자의 프로필 가져오기
+def update_profile(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    profile = Profile.objects.get(user=request.user)
+    
+    if request.method == 'POST':
+        profile_form = ProfileForm(request.POST, instance=profile)
+        picture_form = ProfilePictureForm(request.POST, request.FILES, instance=user_profile)
 
-    if request.method == "POST":
-        form = ProfilePictureForm(request.POST, request.FILES, instance=user_profile)
-        if form.is_valid():
-            form.save()
-            return redirect("mypage")  # ✅ 변경 후 마이페이지로 이동
-
+        if profile_form.is_valid() and picture_form.is_valid():
+            profile_form.save()
+            picture_form.save()
+            print("Updated profile:", profile_form.instance)
+            return redirect('commons:mypage')  # Redirect to mypage after saving
+        else:
+            print(profile_form.errors)  # 오류 출력
+            print(picture_form.errors)
     else:
-        form = ProfilePictureForm(instance=user_profile)
+        profile_form = ProfileForm(instance=profile)
+        picture_form = ProfilePictureForm(instance=user_profile)
 
-    return render(request, "myapp/update_profile_picture.html", {"form": form})
+    context = {
+        'profile_form': profile_form,
+        'picture_form': picture_form,
+        'profile': profile,
+        'user_profile': user_profile
+    }
+    return render(request, 'commons/update_profile.html', context)
