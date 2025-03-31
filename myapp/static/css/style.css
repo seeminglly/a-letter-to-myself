@@ -453,3 +453,40 @@ h2 {
 .tab-section.active {
   display: block;
 }
+
+
+//캘린더
+#calendar {
+  background-color: #f7f7f7;  /* 연회색 */
+  padding: 1rem;
+  border-radius: 10px;
+  min-height: 400px; /* 또는 height 지정 */
+}
+
+
+
+/* 날짜 셀 하나하나의 배경 */
+.fc-daygrid-day {
+  background-color: #736464; /* 기본 흰색으로 두되 border로 구분감 주기 */
+  border: 1px solid #ddd;
+}
+
+/* 이벤트 표시 부분 */
+.fc-event {
+  background-color: #fc9cac !important;
+  border: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* 헤더 스타일 */
+.fc-toolbar-title {
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.fc-col-header-cell {
+  background-color: #9c9595;
+  font-weight: bold;
+}

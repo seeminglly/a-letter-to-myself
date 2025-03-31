@@ -139,19 +139,7 @@ def signup(request):
         form = UserForm()
     return render(request, 'commons/signup.html', {'form': form})
 
-# @login_required
-# def get_routine_events(request):
-#     """편지 루틴 정보를 JSON 데이터로 반환"""
-#     routines = LetterRoutine.objects.all()
-#     events = []
 
-#     for routine in routines:
-#         events.append({
-#             "title": f"📜 {routine.routine_type} 루틴",
-#             "start": routine.date.strftime("%Y-%m-%d")
-#         })
-
-#     return JsonResponse(events, safe=False)
 WEEKDAYS = {
     "Monday": 0, "Tuesday": 1, "Wednesday": 2, "Thursday": 3, "Friday": 4, "Saturday": 5, "Sunday": 6
 }
@@ -165,21 +153,22 @@ def get_routine_events(request):
     today = datetime.today().date()
     events = []
 
+    # 루틴 처리
     for routine in routines:
-        # 예시: 주간 루틴 처리
+        # 주간 루틴
         if routine.routine_type == "weekly":
             weekday = routine.day_of_week
             if weekday:
-                weekday_num = WEEKDAYS[weekday]  # 요일 -> 숫자
+                weekday_num = WEEKDAYS[weekday]
                 next_date = today + timedelta(days=(weekday_num - today.weekday() + 7) % 7)
-                for i in range(12):  # 12주 반복
+                for i in range(52):
                     events.append({
                         "title": routine.title,
                         "start": (next_date + timedelta(weeks=i)).strftime("%Y-%m-%d"),
                         "allDay": True
-                    })
+                    }) 
 
-        # 예시: 월간 루틴 처리
+        # 월간 루틴
         elif routine.routine_type == "monthly":
             for month in range(1, 13):
                 try:
@@ -191,52 +180,17 @@ def get_routine_events(request):
                 except:
                     continue
 
-        for special in special_dates:
-            events.append({
-                "title":f"🎉 {special.name}",
-                "start": special_dates.strftime("%YY-%m-%d"),
-                "allDay":True,
-                "color":"#3399ff"
-            })
+    # 🎉 기념일(SpecialDateRoutine) 처리
+    for special in special_dates:
+        events.append({
+            "title": f"🎉 {special.name}",
+            "start": special.date.strftime("%Y-%m-%d"),
+            "allDay": True,
+            "color": "#3399ff"
+        })
+
+    return JsonResponse(events, safe=False)
 
 
-    return JsonResponse([
-        {
-            "title": "📝 테스트 루틴",
-            "start": "2025-04-01",
-            "allDay": True
-        }
-    ], safe=False)
-
-#기념일 루틴 추가 
-# @login_required
-# def save_specialDateRoutine(request):
-#     if request.method == "POST":
-#         name = request.POST.get("name")
-#         date = request.POST.get("date")
-       
-
-#         special_routine = SpecialDateRoutine.objects.create(
-#             user=request.user,
-#             name = name,
-#             date = date
-#         )
-#         return JsonResponse({"message":"기념일이 성공적으로 저장되었습니다!", "id":special_routine.id})
-
-#     return render(request, "myapp/routine.html")
-
-
-# def routine_list(request):
-#    #print(f"현재 로그인한 사용자: {request.user}")  # ✅ request.user 확인용 디버깅
-#     routines = LetterRoutine.objects.filter(user=request.user)
-#    #print(f"가져온 루틴 개수: {routines.count()}")  # ✅ 루틴 개수 확인
-#     specialDays = SpecialDateRoutine.objects.filter(user=request.user)
-
-#     lists = {
-#         "routines": routines,
-#         "specialDays":specialDays
-
-#     }
-#     return render(request, "myapp/routine.html", lists)
 
 
