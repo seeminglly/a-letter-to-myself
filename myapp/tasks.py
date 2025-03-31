@@ -2,6 +2,8 @@ from celery import shared_task
 from django.core.mail import send_mail
 from .models import LetterRoutine
 from django.utils.timezone import now
+from django.conf import settings
+
 
 @shared_task
 def send_letter_reminders():
@@ -24,6 +26,7 @@ def send_notification(routine):
     send_mail(
         subject="📩 편지 작성 알림",
         message=f"{routine.user.username}님! 오늘은 편지를 작성할 날입니다. ({routine.time})",
-        from_email="no-reply@yourdomain.com",
-        recipient_list=[routine.user.email]
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[routine.user.email],
+        fail_silently=False
     )
