@@ -67,14 +67,17 @@ def generate_comforting_message(emotion):
 
 def recommend_movies_and_music(emotion):
     """감정에 따라 적절한 영화와 음악을 추천하는 함수"""
-    response = openai.ChatCompletion.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": f"너는 감정을 기반으로 영화를 추천하는 AI야. '{emotion}' 감정을 가진 사람에게 추천할 만한 영화 3개와 음악 3개의 제목과 관련 태그 정보를 알려주세요. 영화와 노래의 문단을 줄바꿈으로 나누고, 한 줄에 하나씩 적어주세요."},
-        ],
-        max_tokens=250
-    )
-    return response.choices[0].message.content
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": f"너는 감정을 기반으로 영화를 추천하는 AI야. '{emotion}' 감정을 가진 사람에게 추천할 만한 영화 3개와 음악 3개의 제목과 관련 태그 정보를 알려주세요. 영화와 노래의 문단을 줄바꿈으로 나누고, 한 줄에 하나씩 적어주세요."},
+            ],
+            max_tokens=250
+        )
+        return response.choices[0].message.content
+    except openai.error.RateLimitError:
+        return "현재 추천 기능이 제한되어 있습니다. 나중에 다시 시도해주세요."
 
 @login_required
 def mypage(request):
