@@ -31,23 +31,25 @@ def write_letter(request):
         
     return render(request, 'myapp/writing.html', {'form': form})
 
-def postbox(request):
-    return render(request, 'myapp/postbox.html')
 
 # 2️⃣ 작성된 편지 목록 보기
 @login_required(login_url='commons:login') #로그인 안 하면 로그인 페이지로 이동
 def letter_list(request):
-    letters = Letters.objects.all()
+    letters = Letters.objects.filter(user=request.user)
+
 
     today = datetime.now().date()
     
-    for letter in letters: #'오늘'날짜 기준으로 카테고리 변경
+    for letter in letters:
         if letter.open_date == today:
-             letter.category = 'today'
-        elif letter.open_date >today:
+            letter.category = 'today'
+        elif letter.open_date > today:
             letter.category = 'future'
         else:
             letter.category = 'past'
+    
+    letter.save()  # ✅ DB에 저장!
+
 
     return render(request, 'myapp/letter_list.html', {
         'letters': letters,

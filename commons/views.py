@@ -84,9 +84,10 @@ def recommend_movies_and_music(emotion):
 def mypage(request):
     """사용자가 작성한 편지를 감정 분석하고 위로의 말과 추천 영화/음악을 반환하는 API"""
     
-    # 사용자 프로필 불러오기
-    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-    profile = Profile.objects.get(user=request.user)
+     # ✅ 프로필 정보 최신 상태로 가져오기
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
 
     # 가장 많이 기록된 감정 가져오기
     mood_counts = Letters.objects.filter(user=request.user).values("mood").annotate(count=Count("mood")).order_by("-count")
@@ -111,11 +112,15 @@ def mypage(request):
     user = request.user
     letter_count = user.letters.count()  # related_name을 활용
     routine_count = user.routines.count()
+
+    print("닉네임:", profile.nickname)
+    print("소개:", profile.bio)
     # Django 템플릿으로 데이터 전달
     context = {
         "user": request.user,
         "user_profile": user_profile,
         "profile" : profile,
+         "user_profile": user_profile,
         "user_letters": user_letters,  # 사용자의 모든 편지 리스트
         "mood_counts": mood_counts,  # 감정 통계 데이터
         "most_frequent_mood": most_frequent_mood,  # 가장 많이 나타난 감정
@@ -137,10 +142,13 @@ def update_profile(request):
         picture_form = ProfilePictureForm(request.POST, request.FILES, instance=user_profile)
 
         if profile_form.is_valid() and picture_form.is_valid():
-            profile_form.save()
+            profile = profile_form.save(commit=False)  # ✅ 수정 전 저장 중지
+            profile.user = request.user                # ✅ 필요한 경우 수동 연결
+            profile.save()                             # ✅ 수동 저장
+
             picture_form.save()
-            print("Updated profile:", profile_form.instance)
-            return redirect('commons:mypage')  # Redirect to mypage after saving
+            return redirect('commons:mypage')
+
         else:
             print(profile_form.errors)  # 오류 출력
             print(picture_form.errors)

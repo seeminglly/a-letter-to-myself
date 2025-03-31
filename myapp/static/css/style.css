@@ -12,6 +12,16 @@
   src: url('https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo-Light.woff2') format('woff2'),
        url('https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo-Light.ttf') format('truetype');
 }
+
+/* 로고 전용 스타일 */
+.main-logo {
+  font-family: 'KCC-Sonkeechung', cursive;
+  font-size: 2.2rem;           /* 크기 조정 */
+  font-weight: bold;
+  color: #805a46;
+  text-align: center;
+  margin: 20px 0;
+}
 body {
     font-family: 'Apple SD Gothic Neo';
     text-align: center;
@@ -59,9 +69,7 @@ html.open {
     color: white !important;
     
 }
-#menu ul.nav li {
-    list-style-type: none;
-}
+
 /* 메뉴가 열릴 때 */
 #menu.open {
     left: 0; /* ✅ 완전히 왼쪽으로 나옴 */
@@ -74,7 +82,6 @@ html.open {
     text-align: center;
     font-weight: bold;
     text-decoration: none;
-    
     transition: background 0.3s;
 }
 
@@ -82,8 +89,15 @@ html.open {
 #menu ul.nav li a:hover {
     color: #805a46 !important; /* ✅ 가독성 증가 */
 }
-
-
+#menu ul.nav li{
+  list-style-type: none;
+}
+#menu ul.nav {
+  display: flex;
+  flex-direction: column;   /* ✅ 세로 정렬 강제 */
+  padding: 0;
+  margin: 0;
+}
 /* 배경 오버레이 */
 .page_cover {
     width: 100%;
@@ -455,7 +469,7 @@ h2 {
 }
 
 
-//캘린더
+/*캘린더*/
 #calendar {
   background-color: #f7f7f7;  /* 연회색 */
   padding: 1rem;
