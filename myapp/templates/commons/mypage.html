@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ time }}">
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
-        /* FullCalendar 전체 캘린더 배경 */
+
+/* FullCalendar 전체 캘린더 배경 */
 #calendar {
   background-color: #f7f7f7;  /* 연회색 */
   padding: 1rem;
@@ -51,6 +52,33 @@
   font-weight: bold;
 }
 
+.profile-info {
+  position: relative;
+  text-align: center;
+}
+
+.profile-edit-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #9c9595;  /* 버튼 색상 */
+  color: white;
+  padding: 0.1px 22px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  border-radius: none;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.blog-url a {
+  color: #9c9595;
+  text-decoration: underline !important;
+}
+
     </style>
 </head>
 <body>
@@ -78,7 +106,7 @@
             {% endif %}
             <li>
                 {% if user.is_authenticated %}
-                <a href="{% url 'commons:logout' %}">{{ user.username }} (로그아웃)</a>
+                  <a href="{% url 'commons:logout' %}">{{ user.username }} (로그아웃)</a>
                 
                 {% endif %}
             </li>
@@ -99,6 +127,8 @@
       <p class="email">{{ user.email }}</p>
     
       <p class="intro">한줄소개 또는 MBTI 등</p>
+
+      <a href="{% url 'commons:update_profile' %}" class="btn profile-edit-btn">프로필 수정</a>
     </div>
   </div>
 
@@ -145,12 +175,27 @@
         <div id="calendarArea"></div>  <!-- ✅ 이곳에 렌더링 -->
         </div>
     </div>
-  
 
-    
+    <!-- 프로필 탭 -->
+    <div id="profile" class="tab-section">
+      <div class="profile-card">
+          <div class="profile-banner"></div> <!-- 배경 이미지 -->
+          <div class="profile-info">
+              <!-- 프로필 사진 -->
+              <img src="{{ user_profile.profile_picture.url }}" class="profile-img" alt="user_profile.profile_picture">
+              <h2>{{ user.username }}</h2>
+              <p class="email">{{ user.email }}</p>
 
-    
-
+              <!-- 프로필 정보 -->
+              
+              <p class="nickname">닉네임: {{ profile.nickname }}</p>
+              <p class="bio">한줄소개: {{ profile.bio }}</p>
+              <p class="birthday">생일: {{ profile.birthday }}</p>
+              <p class="blog-url">블로그: <a href="{{ profile.blog_url }}" target="_blank">{{ profile.blog_url }}</a></p>
+          
+          </div>
+      </div>
+    </div>
   </div>
 </div>
 
