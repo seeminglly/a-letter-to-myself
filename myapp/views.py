@@ -165,6 +165,7 @@ def get_routine_events(request):
                 next_date = today + timedelta(days=(weekday_num - today.weekday() + 7) % 7)
                 for i in range(52):
                     events.append({
+                        "id": routine.id,
                         "title": routine.title,
                         "start": (next_date + timedelta(weeks=i)).strftime("%Y-%m-%d"),
                         "allDay": True
@@ -175,6 +176,7 @@ def get_routine_events(request):
             for month in range(1, 13):
                 try:
                     events.append({
+                        "id": routine.id,
                         "title": routine.title,
                         "start": f"2025-{month:02d}-{routine.day_of_month:02d}",
                         "allDay": True
@@ -193,6 +195,11 @@ def get_routine_events(request):
 
     return JsonResponse(events, safe=False)
 
-
-
+def delete_routine(request, pk):
+    try:
+        routine = get_object_or_404(LetterRoutine, pk=pk, user=request.user)
+        routine.delete()
+        return JsonResponse({'status': 'success'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
