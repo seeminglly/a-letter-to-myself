@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from . import views
-from .views import mypage, update_profile_picture
+from .views import mypage, update_profile
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -14,7 +14,7 @@ urlpatterns = [
     path('signup/', views.signup, name="signup"),
     # path('mypage/', login_required(mypage), name='mypage'),
     path('mypage/', mypage, name='mypage'),
-    path("update-profile/", update_profile_picture, name="update_profile"),
+    path("update-profile/", update_profile, name="update_profile"),
 
 ]
 

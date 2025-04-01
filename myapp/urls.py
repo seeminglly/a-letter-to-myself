@@ -2,6 +2,8 @@ from django.urls import path, include
 from .views import letter_list, letter_json, save_routine,get_routine_events
 from django.contrib.auth import views as auth_views
 from myapp import views
+from django.conf.urls.static import static
+from django.conf import settings
 app_name = 'myapp'
 
 urlpatterns = [
@@ -14,3 +16,4 @@ urlpatterns = [
 ]
 
 
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

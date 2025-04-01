@@ -16,14 +16,84 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ time }}">
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
-        /* FullCalendar 전체 캘린더 배경 */
+
+        h1{
+            font-family: 'KCC-Sonkeechung';
+        }
+
+/* FullCalendar 전체 캘린더 배경 */
+#calendar {
+  background-color: #f7f7f7;  /* 연회색 */
+  padding: 1rem;
+  border-radius: 10px;
+  min-height: 400px; /* 또는 height 지정 */
+}
+
+
+
+/* 날짜 셀 하나하나의 배경 */
+.fc-daygrid-day {
+  background-color: #736464; /* 기본 흰색으로 두되 border로 구분감 주기 */
+  border: 1px solid #ddd;
+}
+
+/* 이벤트 표시 부분 */
+.fc-event {
+  background-color: #ff6600 !important;
+  color: white !important;
+  border: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* 헤더 스타일 */
+.fc-toolbar-title {
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.fc-col-header-cell {
+  background-color: #9c9595;
+  font-weight: bold;
+}
+
+
+.profile-info {
+  position: relative;
+  text-align: center;
+}
+
+.profile-edit-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #9c9595;
+  color: white;
+  padding: 8px 12px;
+  height: auto;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 10px;
+  margin-top: 70%;
+  margin-left: 40%;
+  white-space: nowrap;
+  width: fit-content;
+  align-self: center; /* 필요 시 Flex 내 중앙 정렬 */
+}
+
+.blog-url a {
+  color: #9c9595;
+  text-decoration: underline !important;
+}
+
 
 
     </style>
 </head>
 <body>
     <header style="position: relative;">
-        <h1 style=" font-family: 'KCC-Sonkeechung';">A Letter To Myself</h1>
+      <h1 class="main-logo"><a href="{% url 'myapp:home' %}" style="text-decoration: none; color: #805a46;  font-family: 'KCC-Sonkeechung';">A Letter To Myself</a></h1>
     </header>
     <!-- 햄버거 버튼 -->
     <div class="btn">
@@ -34,41 +104,46 @@
     <div class="page_cover"></div>
 
     <!-- 사이드 메뉴 -->
-    <div id="menu">
-        <ul class="nav">
-            <li><a href="http://127.0.0.1:8000/writing">편지 쓰기</a></li>
-            <li><a href="http://127.0.0.1:8000/letters">편지 목록</a></li>
-            <li><a href="http://127.0.0.1:8000/routine">편지 루틴</a></li>
-            {% if user.is_authenticated %}
-                <a href="{% url 'commons:mypage' %}">마이페이지</a>
-            {% else %}
-                <a href="{% url 'commons:login' %}">로그인</a>
-            {% endif %}
-            <li>
-                {% if user.is_authenticated %}
-                <a href="{% url 'commons:logout' %}">{{ user.username }} (로그아웃)</a>
-                
-                {% endif %}
-            </li>
-            <li><a href="{% url 'commons:signup' %}">회원가입</a></li>
-            
-        </ul>
-    </div>
+<div id="menu">
+  <ul class="nav">
+      <li><a href="{% url 'writing' %}">편지 쓰기</a></li>
+      <li><a href="{% url 'myapp:letter_list' %}">편지 목록</a></li>
+      <li><a href="{% url 'routine' %}">편지 루틴</a></li>
+
+      {% if user.is_authenticated %}
+          <li><a href="{% url 'commons:mypage' %}">마이페이지</a></li>
+          <li><a href="{% url 'commons:logout' %}">{{ user.username }} (로그아웃)</a></li>
+      {% else %}
+          <li><a href="{% url 'commons:login' %}">로그인</a></li>
+      {% endif %}
+
+      <li><a href="{% url 'commons:signup' %}">회원가입</a></li>
+  </ul>
+</div>
+
 
     <!-- 전체 wrapper -->
 <div class="mypage-container">
 
-  <!-- 프로필 카드 -->
+  <!-- 프로필 탭 -->
+<div id="profile" class="tab-section">
   <div class="profile-card">
-    <div class="profile-banner"></div> <!-- 배경 이미지 -->
-    <div class="profile-info">
-      <img src="{% static 'images/basicProfile.png' %}" class="profile-img">
-      <h2>{{ user.username }}</h2>
-      <p class="email">{{ user.email }}</p>
-    
-      <p class="intro">한줄소개 또는 MBTI 등</p>
-    </div>
+      <div class="profile-banner"></div> <!-- 배경 이미지 -->
+      <div class="profile-info">
+          <!-- 프로필 사진 -->
+          <img src="{{ user_profile.profile_picture.url }}" class="profile-img" alt="user_profile.profile_picture">
+          <h2>{{ user.username }}</h2>
+          <p class="email">{{ user.email }}</p>
+
+          <!-- 프로필 정보 -->
+          <p class="nickname">닉네임: {{ profile.nickname }}</p>
+          <p class="bio">한줄소개: {{ profile.bio }}</p>
+          <p class="birthday">생일: {{ profile.birthday }}</p>
+          <p class="blog-url">블로그: <a href="{{ profile.blog_url }}" target="_blank">{{ profile.blog_url }}</a></p>
+          <a href="{% url 'commons:update_profile' %}" class="btn profile-edit-btn">프로필 수정</a>
+      </div>
   </div>
+</div>
 
   <!-- 활동 통계 -->
   <div class="activity-stats">
@@ -113,6 +188,27 @@
         <div id="calendarArea"></div>  <!-- ✅ 이곳에 렌더링 -->
         </div>
     </div>
+
+
+    <!-- 프로필 탭
+    <div id="profile" class="tab-section">
+      <div class="profile-card">
+          <div class="profile-banner"></div> <!-- 배경 이미지 
+          <div class="profile-info">
+              <!-- 프로필 사진 
+              <img src="{{ user_profile.profile_picture.url }}" class="profile-img" alt="user_profile.profile_picture">
+              <h2>{{ user.username }}</h2>
+              <p class="email">{{ user.email }}</p>
+
+              <!-- 프로필 정보 
+              
+              <p class="nickname">닉네임: {{ profile.nickname }}</p>
+              <p class="bio">한줄소개: {{ profile.bio }}</p>
+              <p class="birthday">생일: {{ profile.birthday }}</p>
+              <p class="blog-url">블로그: <a href="{{ profile.blog_url }}" target="_blank">{{ profile.blog_url }}</a></p>
+          
+          </div> -->
+
 
 <!-- 📅 루틴 상세 모달 -->
 <div class="modal fade" id="routineModal" tabindex="-1" aria-labelledby="routineModalLabel" aria-hidden="true">

@@ -19,11 +19,12 @@
         h1,h2,ul,button, label, p{
             font-family: 'KCC-Sonkeechung';
         } */
+        
     </style>
 </head>
 <body>
     <header style="position: relative;">
-        <h1><a href="{% url 'myapp:home' %}" style="text-decoration: none; color: #805a46;  font-family: 'KCC-Sonkeechung';"> Letter To Myself</a></h1>
+        <h1><a href="{% url 'myapp:home' %}" style="text-decoration: none; color: #805a46;  font-family: 'KCC-Sonkeechung';">A Letter To Myself</a></h1>
     </header>
     <!-- 햄버거 버튼 -->
     <div class="btn">
@@ -33,27 +34,25 @@
     <!-- 메뉴 바깥을 클릭하면 닫힘 -->
     <div class="page_cover"></div>
 
-    <!-- 사이드 메뉴 -->
-    <div id="menu">
-        <ul class="nav">
-            <li><a href="http://127.0.0.1:8000/writing">편지 쓰기</a></li>
-            <li><a href="http://127.0.0.1:8000/letters">편지 목록</a></li>
-            <li><a href="http://127.0.0.1:8000/routine">편지 루틴</a></li>
-            {% if user.is_authenticated %}
-                <a href="{% url 'commons:mypage' %}">마이페이지</a>
-            {% else %}
-                <a href="{% url 'commons:login' %}">로그인</a>
-            {% endif %}
-            <li>
-                {% if user.is_authenticated %}
-                <a href="{% url 'commons:logout' %}">{{ user.username }} (로그아웃)</a>
-                
-                {% endif %}
-            </li>
-            <li><a href="{% url 'commons:signup' %}">회원가입</a></li>
-            
-        </ul>
-    </div>
+     <!-- 사이드 메뉴 -->
+<div id="menu">
+    <ul class="nav">
+        <li><a href="{% url 'writing' %}">편지 쓰기</a></li>
+        <li><a href="{% url 'myapp:letter_list' %}">편지 목록</a></li>
+        <li><a href="{% url 'routine' %}">편지 루틴</a></li>
+
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'commons:mypage' %}">마이페이지</a></li>
+            <li><a href="{% url 'commons:logout' %}">{{ user.username }} (로그아웃)</a></li>
+        {% else %}
+            <li><a href="{% url 'commons:login' %}">로그인</a></li>
+        {% endif %}
+
+        <li><a href="{% url 'commons:signup' %}">회원가입</a></li>
+    </ul>
+</div>
+
+
 
     
     <div class="routine-buttons">
