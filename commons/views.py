@@ -8,11 +8,11 @@ from django.shortcuts import redirect
 from commons.forms import UserForm, ProfileForm, ProfilePictureForm
 from .forms import ProfilePictureForm
 from django.shortcuts import render
-from django.db.models import Count
+from collections import Counter  
+# from django.db.models import Count
 from myapp.models import Letters
 from .models import Profile, UserProfile
 import os
-
 from dotenv import load_dotenv
 
 
@@ -46,17 +46,23 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 
-def analyze_emotion(letter):
+def analyze_emotion(letters):
+    emotion_list = []
     """사용자가 작성한 편지를 감정 분석하여 감정을 반환"""
-    response = openai.ChatCompletion.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자의 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 happy, sad, angry, worried, neutral 중 하나로 분류해."},
-            {"role": "user", "content": letter}
-        ],
-        max_tokens=10
-    )
-    return response.choices[0].message.content.strip().lower()
+    for letter in letters:
+        response = openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자가 쓴 여러 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 happy, sad, angry, worried, neutral 중 하나로 나타내주세요"},
+                {"role": "user", "content": letter.content}
+            ],
+            max_tokens=7
+        )
+        emotion = response.choices[0].message.content.strip().lower()
+        print(f"[분석된 감정] 편지 내용: {letter.content[:20]}... → 감정: {emotion}")  # ✅ 로그 출력
+        emotion_list.append(emotion)
+
+    return emotion_list
 
 def generate_comforting_message(emotion):
     """감정에 맞는 위로의 말 생성"""
@@ -75,13 +81,14 @@ def recommend_movies_and_music(emotion):
         response = openai.ChatCompletion.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": f"너는 감정을 기반으로 영화를 추천하는 AI야. '{emotion}' 감정을 가진 사람에게 추천할 만한 영화 3개와 음악 3개의 제목과 관련 태그 정보를 알려주세요. 영화와 노래의 문단을 줄바꿈으로 나누고, 한 줄에 하나씩 적어주세요."},
+                {"role": "system", "content": f"너는 감정을 기반으로 영화를 추천하는 AI야. '{emotion}' 감정을 가진 사람에게 추천할 만한 대한민국이나 외국 영화 3개와 음악 3개의 제목과 관련 태그 정보를 알려주세요. 영화와 노래의 문단을 줄바꿈으로 나누고, 한 줄에 하나씩 적어주세요."},
             ],
             max_tokens=250
         )
         return response.choices[0].message.content
     except openai.error.RateLimitError:
         return "현재 추천 기능이 제한되어 있습니다. 나중에 다시 시도해주세요."
+
 
 @login_required
 def mypage(request):
@@ -92,17 +99,26 @@ def mypage(request):
     user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
 
-    # 가장 많이 기록된 감정 가져오기
-    mood_counts = Letters.objects.filter(user=request.user).values("mood").annotate(count=Count("mood")).order_by("-count")
-    most_frequent_mood = mood_counts[0]["mood"] if mood_counts else None
+    # 1. 편지 가져오기
+    letters = Letters.objects.filter(user=request.user)
 
-    # 사용자의 모든 편지 불러오기
-    user_letters = Letters.objects.filter(user=request.user).order_by("-created_at")
-    # 감정별 편지 개수 계산 (통계)
-    mood_counts = user_letters.values("mood").annotate(count=Count("mood")).order_by("-count")
+    # 2. 감정 분석 결과: ['happy', 'sad', 'happy', ...]
+    emotions = analyze_emotion(letters)
 
-    # 가장 많이 나타난 감정 확인
-    most_frequent_mood = mood_counts[0]["mood"] if mood_counts else None
+    # 3. 감정 빈도 계산
+    mood_counts = Counter(emotions)
+
+    # 4. 가장 많이 나온 감정 추출
+    most_frequent_mood = mood_counts.most_common(1)[0][0] if mood_counts else None
+
+
+    # # 사용자의 모든 편지 불러오기
+    # user_letters = Letters.objects.filter(user=request.user).order_by("-created_at")
+    # # 감정별 편지 개수 계산 (통계)
+    #mood_counts = user_letters.values("mood").annotate(count=Count("mood")).order_by("-count")
+
+    # # 가장 많이 나타난 감정 확인
+    # most_frequent_mood = order_mood_counts[0]["response"] if mood_counts else None
 
     # 감정에 따른 위로 메시지 및 추천 영화/음악 생성
     if most_frequent_mood:
@@ -123,8 +139,8 @@ def mypage(request):
         "user": request.user,
         "user_profile": user_profile,
         "profile" : profile,
-         "user_profile": user_profile,
-        "user_letters": user_letters,  # 사용자의 모든 편지 리스트
+        "user_profile": user_profile,
+        #"user_letters": user_letters,  # 사용자의 모든 편지 리스트
         "mood_counts": mood_counts,  # 감정 통계 데이터
         "most_frequent_mood": most_frequent_mood,  # 가장 많이 나타난 감정
         "comfort_message": comfort_message,  # 위로 메시지
