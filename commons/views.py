@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render,get_object_or_404
 
 # Create your views here.
@@ -50,23 +51,25 @@ def analyze_emotion(letters):
     """사용자가 작성한 편지를 감정 분석하여 감정을 반환"""
     emotion_list = []
 
-    try:
-        for letter in letters:
-            response = openai.ChatCompletion.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자가 쓴 여러 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 happy, sad, angry, worried, neutral 중 하나로 나타내주세요"},
-                    {"role": "user", "content": letter.content}
-                ],
-                max_tokens=7
-            )
-            emotion = response.choices[0].message.content.strip().lower()
-            print(f"[분석된 감정] 편지 내용: {letter.content[:20]}... → 감정: {emotion}")
-            emotion_list.append(emotion)
-        return emotion_list
-
-    except openai.error.RateLimitError:
+  try:
+    for letter in letters:
+        response = openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자가 쓴 여러 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 무조건 happy, sad, angry, worried, neutral 중 하나로 나타내주세요"},
+                {"role": "user", "content": letter.content}
+            ],
+            max_tokens=7
+        )
+        emotion = response.choices[0].message.content.strip().lower()
+        print(f"[분석된 감정] 편지 내용: {letter.content[:20]}... → 감정: {emotion}")  # ✅ 로그 출력
+        emotion_list.append(emotion)
+   except openai.error.RateLimitError:
         return ["현재 감정 분석 기능이 제한되어 있습니다. 나중에 다시 시도해주세요."]
+  # ✅ 감정별 횟수 딕셔너리 반환
+    emotion_counts = dict(Counter(emotion_list))
+    return emotion_counts
+
 
 def generate_comforting_message(emotion):
     """감정에 맞는 위로의 말 생성"""
@@ -156,6 +159,7 @@ def mypage(request):
         "profile" : profile,
         "user_profile": user_profile,
         #"user_letters": user_letters,  # 사용자의 모든 편지 리스트
+        "emotions": json.dumps(emotions),
         "mood_counts": mood_counts,  # 감정 통계 데이터
         "is_emotion_failed": is_emotion_failed,
         "most_frequent_mood": most_frequent_mood,  # 가장 많이 나타난 감정
