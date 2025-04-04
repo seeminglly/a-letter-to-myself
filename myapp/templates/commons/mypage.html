@@ -140,8 +140,9 @@
                 {% else %}
                     <p>아직 기록된 감정 데이터가 없습니다.</p>
                 {% endif %}
+                <!-- 그래프 -->
                 <canvas id="moodChart"></canvas>
-                <p style="white-space: pre-line;">{{ comfort_message }}</p>
+                <p style="white-space: pre-line;"><br>{{ comfort_message }}</p>
                 <div class="recommendations">
                     <h3>🎬 추천 영화 & 🎵 추천 음악</h3>
                     <p style="white-space: pre-line;">{{ recommendations }}</p>
@@ -172,11 +173,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     var ctx = document.getElementById('moodChart').getContext('2d');
+    var moodData = JSON.parse('{{ emotions|safe }}');
+    var labels = Object.keys(moodData); 
+    var values = Object.values(moodData);  // ← 이 줄을 추가해야 함
+
+    console.log("labels:", labels);
+    console.log("values:", values);
+
     var chartData = {
-        labels: [{% for mood in mood_counts %}"{{ mood.mood }}",{% endfor %}],
+        labels: labels,
         datasets: [{
             label: '감정 기록 횟수',
-            data: [{% for mood in mood_counts %}{{ mood.count }},{% endfor %}],
+            data:  values,
             backgroundColor: ['rgba(255,99,132,0.2)', 'rgba(255,159,64,0.2)', 'rgba(255,205,86,0.2)', 'rgba(75,192,192,0.2)', 'rgba(54,162,235,0.2)', 'rgba(153,102,255,0.2)', 'rgba(201,203,207,0.2)'],
             borderColor: ['rgb(255,99,132)', 'rgb(255,159,64)', 'rgb(255,205,86)', 'rgb(75,192,192)', 'rgb(54,162,235)', 'rgb(153,102,255)', 'rgb(201,203,207)'],
             borderWidth: 1

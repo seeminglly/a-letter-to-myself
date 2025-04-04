@@ -31,7 +31,7 @@ class Letters(models.Model):
     category = models.CharField(max_length=20,
                                 choices=CATEGORIES,
                                 default='future')
-    mood = models.CharField(max_length=10, choices=MOOD_CHOICES, default='happy')
+    # mood = models.CharField(max_length=10, choices=MOOD_CHOICES, default='happy')
 
     def save(self, *args, **kwargs):
         """ 개봉 일자에 따라 자동으로 카테고리 설정 """

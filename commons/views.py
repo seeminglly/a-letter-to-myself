@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render,get_object_or_404
 
 # Create your views here.
@@ -53,7 +54,7 @@ def analyze_emotion(letters):
         response = openai.ChatCompletion.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자가 쓴 여러 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 happy, sad, angry, worried, neutral 중 하나로 나타내주세요"},
+                {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자가 쓴 여러 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 무조건 happy, sad, angry, worried, neutral 중 하나로 나타내주세요"},
                 {"role": "user", "content": letter.content}
             ],
             max_tokens=7
@@ -61,8 +62,10 @@ def analyze_emotion(letters):
         emotion = response.choices[0].message.content.strip().lower()
         print(f"[분석된 감정] 편지 내용: {letter.content[:20]}... → 감정: {emotion}")  # ✅ 로그 출력
         emotion_list.append(emotion)
-
-    return emotion_list
+   
+  # ✅ 감정별 횟수 딕셔너리 반환
+    emotion_counts = dict(Counter(emotion_list))
+    return emotion_counts
 
 def generate_comforting_message(emotion):
     """감정에 맞는 위로의 말 생성"""
@@ -141,6 +144,7 @@ def mypage(request):
         "profile" : profile,
         "user_profile": user_profile,
         #"user_letters": user_letters,  # 사용자의 모든 편지 리스트
+        "emotions": json.dumps(emotions),
         "mood_counts": mood_counts,  # 감정 통계 데이터
         "most_frequent_mood": most_frequent_mood,  # 가장 많이 나타난 감정
         "comfort_message": comfort_message,  # 위로 메시지
