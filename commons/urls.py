@@ -15,6 +15,7 @@ urlpatterns = [
     # path('mypage/', login_required(mypage), name='mypage'),
     path('mypage/', mypage, name='mypage'),
     path("update-profile/", update_profile, name="update_profile"),
+    
 
 ]
 

@@ -66,7 +66,7 @@
             text-decoration: none;
             border-radius: 5px;
             font-size: 10px;
-            margin-top: 70%;
+            margin-top: 55%;
             margin-left: 40%;
             white-space: nowrap;
             width: fit-content;
@@ -135,15 +135,11 @@
         <div id="letters" class="tab-section active">
             <div class="chatbot-section">
                 <h2>📜 당신의 감정 분석 결과</h2>
-
-                {% if is_emotion_failed %}
-                    <p><strong>⚠️ 현재 감정 분석 기능이 제한되어 있습니다. 나중에 다시 시도해주세요.</strong></p>
-                {% elif most_frequent_mood %}
+                {% if most_frequent_mood %}
                     <p>가장 많이 느낀 감정은 <strong>{{ most_frequent_mood }}</strong> 입니다.</p>
                 {% else %}
                     <p>아직 기록된 감정 데이터가 없습니다.</p>
                 {% endif %}
-
                 <!-- 그래프 -->
                 <canvas id="moodChart"></canvas>
                 <p style="white-space: pre-line;"><br>{{ comfort_message }}</p>
@@ -179,7 +175,7 @@
     var ctx = document.getElementById('moodChart').getContext('2d');
     var moodData = JSON.parse('{{ emotions|safe }}');
     var labels = Object.keys(moodData); 
-    var values = Object.values(moodData);  // ← 이 줄을 추가해야 함
+    var values = Object.values(moodData);  
 
     console.log("labels:", labels);
     console.log("values:", values);

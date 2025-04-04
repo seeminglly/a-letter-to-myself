@@ -51,21 +51,21 @@ def analyze_emotion(letters):
     """사용자가 작성한 편지를 감정 분석하여 감정을 반환"""
     emotion_list = []
 
-  try:
-    for letter in letters:
-        response = openai.ChatCompletion.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자가 쓴 여러 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 무조건 happy, sad, angry, worried, neutral 중 하나로 나타내주세요"},
-                {"role": "user", "content": letter.content}
-            ],
-            max_tokens=7
-        )
-        emotion = response.choices[0].message.content.strip().lower()
-        print(f"[분석된 감정] 편지 내용: {letter.content[:20]}... → 감정: {emotion}")  # ✅ 로그 출력
-        emotion_list.append(emotion)
-   except openai.error.RateLimitError:
-        return ["현재 감정 분석 기능이 제한되어 있습니다. 나중에 다시 시도해주세요."]
+    try:
+        for letter in letters:
+            response = openai.ChatCompletion.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자가 쓴 여러 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 무조건 happy, sad, angry, worried, neutral 중 하나로 나타내주세요"},
+                    {"role": "user", "content": letter.content}
+                ],
+                max_tokens=7
+            )
+            emotion = response.choices[0].message.content.strip().lower()
+            print(f"[분석된 감정] 편지 내용: {letter.content[:20]}... → 감정: {emotion}")  # ✅ 로그 출력
+            emotion_list.append(emotion)
+    except openai.error.RateLimitError:
+            return ["현재 감정 분석 기능이 제한되어 있습니다. 나중에 다시 시도해주세요."]
   # ✅ 감정별 횟수 딕셔너리 반환
     emotion_counts = dict(Counter(emotion_list))
     return emotion_counts
@@ -74,11 +74,11 @@ def analyze_emotion(letters):
 def generate_comforting_message(emotion):
     """감정에 맞는 위로의 말 생성"""
     comfort_prompts = {
-        "happy": "기분이 좋다니 정말 다행이에요! 당신의 행복이 오래 지속되기를 바라요. \n 당신의 기분이 오래 지속될 수 있도록 영화와 노래 추천을 해드릴게요!",
-        "sad": "오늘 힘든 하루였군요. 저는 당신을 응원하고 있어요. 당신은 혼자가 아니에요.",
-        "angry": "화가 날 수도 있어요. 하지만 깊게 호흡하고 긍정적인 방향으로 생각해보는 건 어떨까요?",
-        "worried": "걱정이 많을 땐 작은 것부터 해결해 나가는 것이 중요해요. 천천히 하나씩 정리해봐요.",
-        "diary": "어떤 감정이든 괜찮아요. 오늘도 수고 많았어요!"
+        "happy": "기분이 좋다니 정말 다행이에요! \n 당신의 행복이 오래 지속되기를 바라요. \n 당신의 기분이 오래 지속될 수 있도록 영화와 노래 추천을 해드릴게요!",
+        "sad": "오늘 힘든 하루였군요. \n 저는 당신을 응원하고 있어요. \n당신은 혼자가 아니에요.",
+        "angry": "화가 날 수도 있어요. \n하지만 깊게 호흡하고 긍정적인 방향으로 생각해보는 건 어떨까요?",
+        "worried": "걱정이 많을 땐 작은 것부터 해결해 나가는 것이 중요해요.\n 천천히 하나씩 정리해봐요.",
+        "diary": "어떤 감정이든 괜찮아요. \n오늘도 수고 많았어요!"
     }
     return comfort_prompts.get(emotion, "당신의 감정을 이해하고 싶어요. 좀 더 이야기해 줄 수 있나요?")
 
@@ -113,7 +113,7 @@ def mypage(request):
     emotions = analyze_emotion(letters)
 
     # 실패 여부 체크
-    is_emotion_failed = emotions and "제한되어 있습니다" in emotions[0]
+    is_emotion_failed = emotions and any("제한되어 있습니다" in e for e in emotions)
 
 
     # 감정 분석 실패 여부에 따라 처리 분기
