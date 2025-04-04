@@ -135,11 +135,15 @@
         <div id="letters" class="tab-section active">
             <div class="chatbot-section">
                 <h2>📜 당신의 감정 분석 결과</h2>
-                {% if most_frequent_mood %}
+
+                {% if is_emotion_failed %}
+                    <p><strong>⚠️ 현재 감정 분석 기능이 제한되어 있습니다. 나중에 다시 시도해주세요.</strong></p>
+                {% elif most_frequent_mood %}
                     <p>가장 많이 느낀 감정은 <strong>{{ most_frequent_mood }}</strong> 입니다.</p>
                 {% else %}
                     <p>아직 기록된 감정 데이터가 없습니다.</p>
                 {% endif %}
+                
                 <canvas id="moodChart"></canvas>
                 <p style="white-space: pre-line;">{{ comfort_message }}</p>
                 <div class="recommendations">

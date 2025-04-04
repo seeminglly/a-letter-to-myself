@@ -47,22 +47,26 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 def analyze_emotion(letters):
-    emotion_list = []
     """사용자가 작성한 편지를 감정 분석하여 감정을 반환"""
-    for letter in letters:
-        response = openai.ChatCompletion.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자가 쓴 여러 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 happy, sad, angry, worried, neutral 중 하나로 나타내주세요"},
-                {"role": "user", "content": letter.content}
-            ],
-            max_tokens=7
-        )
-        emotion = response.choices[0].message.content.strip().lower()
-        print(f"[분석된 감정] 편지 내용: {letter.content[:20]}... → 감정: {emotion}")  # ✅ 로그 출력
-        emotion_list.append(emotion)
+    emotion_list = []
 
-    return emotion_list
+    try:
+        for letter in letters:
+            response = openai.ChatCompletion.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "너는 감정을 분석하는 AI야. 사용자가 쓴 여러 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 happy, sad, angry, worried, neutral 중 하나로 나타내주세요"},
+                    {"role": "user", "content": letter.content}
+                ],
+                max_tokens=7
+            )
+            emotion = response.choices[0].message.content.strip().lower()
+            print(f"[분석된 감정] 편지 내용: {letter.content[:20]}... → 감정: {emotion}")
+            emotion_list.append(emotion)
+        return emotion_list
+
+    except openai.error.RateLimitError:
+        return ["현재 감정 분석 기능이 제한되어 있습니다. 나중에 다시 시도해주세요."]
 
 def generate_comforting_message(emotion):
     """감정에 맞는 위로의 말 생성"""
@@ -105,11 +109,21 @@ def mypage(request):
     # 2. 감정 분석 결과: ['happy', 'sad', 'happy', ...]
     emotions = analyze_emotion(letters)
 
-    # 3. 감정 빈도 계산
-    mood_counts = Counter(emotions)
+    # 실패 여부 체크
+    is_emotion_failed = emotions and "제한되어 있습니다" in emotions[0]
 
-    # 4. 가장 많이 나온 감정 추출
-    most_frequent_mood = mood_counts.most_common(1)[0][0] if mood_counts else None
+
+    # 감정 분석 실패 여부에 따라 처리 분기
+    if is_emotion_failed:
+        most_frequent_mood = None
+        comfort_message = emotions[0]
+        recommendations = "영화/음악 추천도 사용할 수 없습니다."
+        mood_counts = []  # 차트용 데이터도 비워줘야 함
+    else:
+        mood_counts = Counter(emotions) #감정 빈도 계산
+        most_frequent_mood = mood_counts.most_common(1)[0][0] if mood_counts else None
+        comfort_message = generate_comforting_message(most_frequent_mood)
+        recommendations = recommend_movies_and_music(most_frequent_mood)
 
 
     # # 사용자의 모든 편지 불러오기
@@ -127,7 +141,8 @@ def mypage(request):
     else:
         comfort_message = "아직 감정 분석된 편지가 없습니다."
         recommendations = "편지를 작성하면 감정 분석 후 추천 영화와 음악을 제공해 드립니다."
-
+        
+    
     user = request.user
     letter_count = user.letters.count()  # related_name을 활용
     routine_count = user.routines.count()
@@ -142,6 +157,7 @@ def mypage(request):
         "user_profile": user_profile,
         #"user_letters": user_letters,  # 사용자의 모든 편지 리스트
         "mood_counts": mood_counts,  # 감정 통계 데이터
+        "is_emotion_failed": is_emotion_failed,
         "most_frequent_mood": most_frequent_mood,  # 가장 많이 나타난 감정
         "comfort_message": comfort_message,  # 위로 메시지
         "recommendations": recommendations, # 추천 영화 & 음악
