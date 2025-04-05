@@ -1,3 +1,16 @@
+function setRoutine(type) {
+    console.log("clicked!", type);  // ✅ 클릭 테스트 로그
+    const routineSection = document.getElementById('routine-section');
+    const specialSection = document.getElementById('special-section');
+
+    if (type === 'weekly') {
+        routineSection.style.display = 'block';
+        specialSection.style.display = 'none';
+    } else if (type === 'special') {
+        routineSection.style.display = 'none';
+        specialSection.style.display = 'block';
+    }
+}
 
 
 function showCategory(event) {
@@ -21,6 +34,7 @@ function showCategory(event) {
         targetSection.style.display = "block";
     }
 }
+
 document.addEventListener("DOMContentLoaded", function() {
     let defaultTab = document.querySelector(".tabs .active");  // ✅ 기본 활성화된 탭 찾기
     if (defaultTab) {
@@ -99,3 +113,4 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
