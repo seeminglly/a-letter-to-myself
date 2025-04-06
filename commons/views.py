@@ -15,6 +15,7 @@ from myapp.models import Letters
 from .models import Profile, UserProfile
 import os
 from dotenv import load_dotenv
+from django.utils.timezone import now
 
 
 def logout_view(request):
@@ -27,8 +28,8 @@ def signup(request):
         if form.is_valid():
             user = form.save()  # ✅ 사용자 저장 후, 반환된 객체 사용
 
-            profile = Profile.objects.create(user=user)  # 새로운 Profile 객체 생성
-            UserProfile.objects.create(user=user, profile=profile)  # 새로운 UserProfile 객체 생성 및 연결
+            Profile.objects.create(user=user)  # 새로운 Profile 객체 생성
+            UserProfile.objects.get_or_create(user=user)  # 새로운 UserProfile 객체 생성 및 연결
 
             login(request, user)  # ✅ 자동 로그인
             return redirect('/')  # ✅ 회원가입 후 홈으로 이동
@@ -53,6 +54,10 @@ def analyze_emotion(letters):
 
     try:
         for letter in letters:
+            if letter.emotion:  # 이미 분석된 경우
+                emotion_list.append(letter.emotion)
+                continue
+             
             response = openai.ChatCompletion.create(
                 model="gpt-4o",
                 messages=[
@@ -62,8 +67,11 @@ def analyze_emotion(letters):
                 max_tokens=7
             )
             emotion = response.choices[0].message.content.strip().lower()
-            print(f"[분석된 감정] 편지 내용: {letter.content[:20]}... → 감정: {emotion}")  # ✅ 로그 출력
             emotion_list.append(emotion)
+            letter.emotion = emotion
+            letter.analyzed_at = now()
+            letter.save(update_fields=["emotion", "analyzed_at"])  # DB에 저장
+
     except openai.error.RateLimitError:
             return ["현재 감정 분석 기능이 제한되어 있습니다. 나중에 다시 시도해주세요."]
   # ✅ 감정별 횟수 딕셔너리 반환
@@ -105,12 +113,13 @@ def mypage(request):
     profile, _ = Profile.objects.get_or_create(user=request.user)
     user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
-
     # 1. 편지 가져오기
     letters = Letters.objects.filter(user=request.user)
 
-    # 2. 감정 분석 결과: ['happy', 'sad', 'happy', ...]
+     # 감정 분석 결과 저장 (최대 1회만 실행)
     emotions = analyze_emotion(letters)
+
+   
 
     # 실패 여부 체크
     is_emotion_failed = emotions and any("제한되어 있습니다" in e for e in emotions)

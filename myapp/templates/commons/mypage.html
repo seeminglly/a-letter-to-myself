@@ -66,8 +66,6 @@
             text-decoration: none;
             border-radius: 5px;
             font-size: 10px;
-            margin-top: 55%;
-            margin-left: 40%;
             white-space: nowrap;
             width: fit-content;
             align-self: center;
@@ -107,7 +105,11 @@
         <div class="profile-card">
             <div class="profile-banner"></div>
             <div class="profile-info">
-                <img src="{{ user_profile.profile_picture.url }}" class="profile-img" alt="user_profile.profile_picture">
+                {% if user_profile.profile_picture %}
+                    <img src="{{ user_profile.profile_picture.url }}" class="profile-img" alt="프로필 이미지">
+                {% else %}
+                    <img src="{% static 'images/basicprofile.png' %}" class="profile-img" alt="기본 이미지">
+                {% endif %}
                 <h2>{{ user.username }}</h2>
                 <p class="email">{{ user.email }}</p>
                 <p class="nickname">닉네임: {{ profile.nickname }}</p>

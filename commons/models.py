@@ -26,7 +26,12 @@ class Profile(models.Model):
     
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # ✅ 사용자와 1:1 연결
-    profile_picture = models.ImageField(upload_to=profile_picture_upload_to, default="default.jpg")  # ✅ 프로필 사진 저장
+    profile_picture = models.ImageField(
+    upload_to='profile_pics/',
+    blank=True,
+    null=True
+)
+ # ✅ 프로필 사진 저장
 
     def __str__(self):
         return self.user.username

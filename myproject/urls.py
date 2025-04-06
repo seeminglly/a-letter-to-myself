@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from myapp import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 
@@ -32,4 +34,8 @@ urlpatterns = [
     path('routine/', views.save_routine , name="routine"),
     path('accounts/', include('django.contrib.auth.urls')),  
    
-]
+] 
+# 개발 중일 때만 미디어 파일 서빙
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

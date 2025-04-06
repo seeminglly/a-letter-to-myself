@@ -9,13 +9,12 @@ CATEGORIES = (
 )
 
 MOOD_CHOICES = [
-    ('happy', '😊 행복'),
-    ('sad', '😢 슬픔'),
-    ('angry', '😡 화남'),
-    ('worried', '🤔 고민'),
-    ('diary', '📝 일기')
+    ('happy', '기쁨'),
+    ('sad', '슬픔'),
+    ('angry', '분노'),
+    ('worried', '불안'),
+    ('neutral', '중립'),
 ]
-
 
 def get_default_user():
     return User.objects.first().id  # ✅ 가장 첫 번째 사용자 ID를 기본값으로 설정
@@ -31,6 +30,8 @@ class Letters(models.Model):
     category = models.CharField(max_length=20,
                                 choices=CATEGORIES,
                                 default='future')
+    emotion = models.CharField(max_length=30, choices=MOOD_CHOICES, null=True, blank=True)
+    analyzed_at = models.DateTimeField(null=True, blank=True)
     # mood = models.CharField(max_length=10, choices=MOOD_CHOICES, default='happy')
 
     def save(self, *args, **kwargs):
@@ -60,6 +61,7 @@ class LetterRoutine(models.Model):
     day_of_month = models.IntegerField(null=True, blank=True)
     time = models.TimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    emotion = models.CharField(max_length=10, choices=MOOD_CHOICES, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.routine_type} ({self.day_of_week} {self.time})"
