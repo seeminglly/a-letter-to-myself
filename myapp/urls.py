@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 from myapp import views
 from django.conf.urls.static import static
 from django.conf import settings
-from myapp.views import login_view
+#from myapp.views import login_view
 app_name = 'myapp'
 
 urlpatterns = [
@@ -14,8 +14,8 @@ urlpatterns = [
     path('api/routines/', views.get_routine_events, name='get_routine_events'),
     path("routine/",save_routine, name = "save_routine"),
     path("routine/delete/<int:pk>/", delete_routine, name="delete_routine"),  # 루틴 삭제
-    path('signup/', views.signup, name='signup'),
-    path('login/', login_view, name='login'),
+    # path('signup/', views.signup, name='signup'),
+    # path('login/', login_view, name='login'),
 ]
 
 

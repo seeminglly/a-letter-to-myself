@@ -116,39 +116,8 @@ def save_routine(request):
 
     return render(request, "myapp/routine.html", lists)
 
-@csrf_exempt
-def login_view(request):
-    print("🛠 login_view 호출됨")  # ✅ 무조건 호출 여부 확인
 
-    if request.method == "POST":
-        print("🔑 POST 요청 수신됨")
-        username = request.POST.get('username')
-        password = request.POST.get('password')
 
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            print(f"✅ 로그인 성공: {user.username}")
-            login(request, user)
-            return redirect('myapp/index.html')
-        else:
-            print("❌ 로그인 실패: 인증 실패")
-            return render(request, 'commons/login.html', {'error': '아이디 또는 비밀번호가 틀렸습니다.'})
-    
-    return render(request, 'commons/login.html')
-
-def signup(request):
-    if request.method == "POST":
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)  # 사용자 인증
-            login(request, user)  # 로그인
-            return redirect('myapp/index.html')
-    else:
-        form = UserForm()
-    return render(request, 'commons/signup.html', {'form': form})
 
 
 WEEKDAYS = {
