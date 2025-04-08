@@ -14,8 +14,7 @@ urlpatterns = [
     path('api/routines/', views.get_routine_events, name='get_routine_events'),
     path("routine/",save_routine, name = "save_routine"),
     path("routine/delete/<int:pk>/", delete_routine, name="delete_routine"),  # 루틴 삭제
-    # path('signup/', views.signup, name='signup'),
-    # path('login/', login_view, name='login'),
+   
 ]
 
 
