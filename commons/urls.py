@@ -2,13 +2,15 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 #from django.contrib.auth.decorators import login_required
 from . import views
-from .views import mypage, update_profile
 from commons.views import reanalyze_all_emotions
 
 from .views import (
+    mypage,
+    update_profile,
     user_emotion_summary,         # 통합 마이페이지 API
     generate_comforting_message,  # 위로 메시지
-    recommend_movies_and_music    # 추천 API
+    recommend_movies_and_music,    # 추천 API
+    save_feedback
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -28,6 +30,8 @@ urlpatterns = [
     path("api/recommendations/emotion-based/", recommend_movies_and_music, name="recommend"),
     path("api/user/emotion-summary/", user_emotion_summary, name="emotion-summary"),
     path("update-profile/", update_profile, name="update_profile"),
+    path('api/feedback/save/', views.save_feedback, name='save_feedback'),
+
 
 ]
 

@@ -115,15 +115,15 @@ html.open {
     display: block;
 }
 
-/* 햄버거 버튼 */
-.btn {
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    z-index: 11;
-    cursor: pointer;
+/* btn → hamburger-btn으로 분리 */
+.hamburger-btn {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 11;
+  cursor: pointer;
 }
 
 
@@ -414,6 +414,7 @@ h2 {
   margin: auto;
   background: #f9f9f9;
   padding: 2rem;
+  position: ss
 }
 
 .profile-card {

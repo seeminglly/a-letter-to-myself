@@ -15,13 +15,16 @@ from django.shortcuts import render
 from collections import Counter  
 # from django.db.models import Count
 from myapp.models import Letters
-from .models import Profile, UserProfile
+from .models import Feedback, Profile, UserProfile, RecommendationFeedback
 import os
 from dotenv import load_dotenv
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 from commons.utils.emotion import analyze_emotion_for_letter
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+
 
 
 
@@ -108,26 +111,50 @@ def generate_comforting_message(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def recommend_movies_and_music(request):
     """감정에 따라 적절한 영화와 음악을 추천하는 함수"""
-
     most_frequent_mood = request.data.get("most_frequent_mood")
-    #emotion_counts = analyze_emotion_api(request._request)
-    #most_frequent_mood = Counter(emotion_counts).most_common(1)[0][0]
 
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": f"너는 감정을 기반으로 영화를 추천하는 AI야. '{most_frequent_mood}' 감정을 가진 사람에게 추천할 만한 대한민국이나 외국 영화 3개와 음악 3개의 제목과 관련 태그 정보를 알려주세요. 영화와 노래의 문단을 줄바꿈으로 나누고, 한 줄에 하나씩 적어주세요."},
+                {
+                    "role": "system",
+                    "content": (
+                        f"'{most_frequent_mood}' 감정을 가진 사람에게 추천할 "
+                        f"대한민국 또는 외국 영화 3편과 음악 3곡을 각각 구분된 문단(예: '### 영화 추천' / '### 음악 추천') 아래에 항목별로 나열해줘. "
+                        f"항목은 '제목 - 태그1, 태그2' 형식으로 한 줄씩 작성해줘. 중복 없이 제공해줘."
+                    ),
+                },
             ],
-            max_tokens=250
+            max_tokens=600
         )
-        recommendation_text = response.choices[0].message.content
-        return Response({"recommendations": recommendation_text})  # ✅ dict로 감싸기
-    
+
+        raw_text = response.choices[0].message.content
+
+        # ✅ 사용자의 dislike 항목 가져오기
+        from commons.models import Feedback
+        disliked_titles = set(
+            Feedback.objects.filter(user=request.user, feedback="dislike")
+            .values_list("item_title", flat=True)
+        )
+
+        # ✅ 추천 라인 필터링
+        lines = raw_text.strip().splitlines()
+        filtered_lines = [
+            line for line in lines
+            if not any(disliked_title.strip() in line for disliked_title in disliked_titles)
+        ]
+
+        cleaned_text = "\n".join(filtered_lines)
+
+        return Response({"recommendations": cleaned_text})
+
     except openai.error.RateLimitError:
-        return "현재 추천 기능이 제한되어 있습니다. 나중에 다시 시도해주세요."
+        return Response({"error": "현재 추천 기능이 제한되어 있습니다. 나중에 다시 시도해주세요."}, status=429)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -275,6 +302,8 @@ def mypage(request):
         "recommendations": recommendations,
         "letter_count": letter_count,
         "routine_count": routine_count,
+        "recommendation_lines": recommendations.splitlines() if recommendations else [],
+
     }
 
     return render(request, 'commons/mypage.html', context)
@@ -310,3 +339,18 @@ def update_profile(request):
         'user_profile': user_profile
     }
     return render(request, 'commons/update_profile.html', context)
+
+@require_POST
+@login_required
+def save_feedback(request):
+    item_title = request.POST.get("item_title")
+    item_type = request.POST.get("item_type")
+    feedback = request.POST.get("feedback")
+
+    Feedback.objects.update_or_create(
+        user=request.user,
+        item_title=item_title,
+        item_type=item_type,
+        defaults={"feedback": feedback}
+    )
+    return JsonResponse({"message": f"{'좋아요' if feedback == 'like' else '별로예요'}로 저장되었습니다."})
