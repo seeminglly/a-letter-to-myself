@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'commons',  
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,15 @@ LOGOUT_REDIRECT_URL = '/'  # 로그아웃 후 이동할 페이지
 MEDIA_URL = '/media/'
 #MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = BASE_DIR / 'media'
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "A Letter to Myself API",
+    "DESCRIPTION": "감정 분석 기반 편지 서비스 API 문서",
+    "VERSION": "1.0.0",
+    # 선택: 인증 설정
+    "SERVE_INCLUDE_SCHEMA": False,
+}

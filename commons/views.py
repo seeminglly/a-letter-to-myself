@@ -21,6 +21,8 @@ from dotenv import load_dotenv
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
+from commons.utils.emotion import analyze_emotion_for_letter
+
 
 
 
@@ -75,68 +77,33 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def analyze_emotion_api(request):
-    """최근 5개의 편지를 감정 분석하고, 감정별 통계와 가장 많은 감정 반환"""
-    emotion_list = []
+def reanalyze_all_emotions(request):
     user = request.user
     letters = Letters.objects.filter(user=user)
 
-    try:
-        for letter in letters:
-            if letter.emotion:
-                emotion_list.append(letter.emotion)
-                continue
+    for letter in letters:
+        analyze_emotion_for_letter(letter)
 
-            response = openai.ChatCompletion.create(
-                model="gpt-4o",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "너는 감정을 분석하는 AI야. 사용자가 쓴 여러 편지를 문맥과 단어 등을 고려하여 분석하고 감정을 무조건 happy, sad, angry, worried, neutral 중 하나로 나타내주세요"
-                    },
-                    {
-                        "role": "user",
-                        "content": letter.content
-                    }
-                ],
-                max_tokens=7
-            )
-            emotion = response.choices[0].message.content.strip().lower()
-            emotion_list.append(emotion)
-
-            # 편지에 감정 결과 저장
-            letter.emotion = emotion
-            letter.analyzed_at = now()
-            letter.save(update_fields=["emotion", "analyzed_at"])
-
-    except openai.error.RateLimitError:
-        return Response({"error": "현재 감정 분석 기능이 제한되어 있습니다. 나중에 다시 시도해주세요."}, status=429)
-
-    # 감정 통계
-    emotion_counts = dict(Counter(emotion_list))
-    most_frequent = max(emotion_counts.items(), key=lambda x: x[1])[0] if emotion_counts else None
-
-    #json형태로 반환
-    return Response({
-        "emotions": emotion_counts,
-        "most_frequent_mood": most_frequent
-    }, status=200)
+ # 분석이 끝난 후 마이페이지로 리디렉션
+    return redirect("commons:mypage")   
 
 
 @api_view(["POST"])
 def generate_comforting_message(request):
-    """감정에 맞는 위로의 말 생성"""
+    """상위 감정(mood)에 맞는 위로의 말 생성"""
 
-    emotion = request.data.get("emotion")
+    mood = request.data.get("mood") or request.data.get("emotion")   # '기쁨', '슬픔' 등
 
     comfort_prompts = {
-            "happy": "기분이 좋다니 정말 다행이에요! \n 당신의 행복이 오래 지속되기를 바라요. \n 당신의 기분이 오래 지속될 수 있도록 영화와 노래 추천을 해드릴게요!",
-            "sad": "오늘 힘든 하루였군요. \n 저는 당신을 응원하고 있어요. \n당신은 혼자가 아니에요.",
-            "angry": "화가 날 수도 있어요. \n하지만 깊게 호흡하고 긍정적인 방향으로 생각해보는 건 어떨까요?",
-            "worried": "걱정이 많을 땐 작은 것부터 해결해 나가는 것이 중요해요.\n 천천히 하나씩 정리해봐요.",
-            "diary": "어떤 감정이든 괜찮아요. \n오늘도 수고 많았어요!"
-        }
-    message = comfort_prompts.get(emotion, "당신의 감정을 이해하고 싶어요. 좀 더 이야기해 줄 수 있나요?")
+        "기쁨": "당신의 행복한 순간을 함께 나눌 수 있어 기뻐요. 그 기쁨이 오래 지속되길 바라요!",
+        "슬픔": "슬픈 날에는 울어도 괜찮아요. 당신의 감정을 있는 그대로 받아들여 주세요. 저는 당신을 응원해요.",
+        "분노": "화나는 감정을 느끼는 건 당연해요. 잠시 숨을 고르고, 천천히 생각을 정리해봐요.",
+        "불안": "불안한 마음은 누구에게나 찾아와요. 당신은 잘 해내고 있어요. 천천히, 차분히 앞으로 나아가요.",
+        "사랑": "사랑하는 마음은 참 소중해요. 그 따뜻한 마음이 더 많은 사람에게 전해지기를 바라요.",
+        "중립": "감정이 특별히 떠오르지 않는 날도 있어요. 그런 날엔 그저 편안함 속에 머물러도 좋아요."
+    }
+
+    message = comfort_prompts.get(mood, "당신의 감정을 이해하고 싶어요. 편하게 이야기해 주세요.")
     return Response({"comfort_message": message})
 
 
@@ -165,65 +132,57 @@ def recommend_movies_and_music(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def user_emotion_summary(request):
-    csrf_token = request.COOKIES.get('csrftoken')
-
-    headers = {
-        'X-CSRFToken': csrf_token
-    }
-    
-    """마이페이지용 감정분석/메세지/추천 통합 api"""
     user = request.user
+    letters = Letters.objects.filter(user=user)
+
+    emotion_list = [letter.mood for letter in letters if letter.mood]
+    detailed_list = [letter.detailed_mood for letter in letters if letter.detailed_mood]  
+
+    from collections import Counter
+    emotion_counts = dict(Counter(emotion_list))
+    detailed_counts = dict(Counter(detailed_list))
+
+    most_frequent_mood = max(emotion_counts.items(), key=lambda x: x[1])[0] if emotion_counts else None
+    most_frequent_detailed_mood = max(detailed_counts.items(), key=lambda x: x[1])[0] if detailed_counts else None
+
     BASE_URL = "http://127.0.0.1:8000/commons"
+    csrf_token = request.COOKIES.get('csrftoken')
+    headers = {
+        'X-CSRFToken': csrf_token,
+        'Content-Type': 'application/json'
+    }
 
-
-    # 1. 사용자 편지 감정 분석 api호출
+    # ✅ comfort_message 요청은 단 한 번, 예외도 전체 감싸기
     try:
-        print("🚀 감정 분석 API 호출 시작")
-        emotion_res = requests.post(
-            f"{BASE_URL}/api/emotions/analyze/",
-            headers=headers,
-            cookies = request.COOKIES
-        )
-        emotion_data = emotion_res.json() #api응답을 json형태로 파싱
-        emotions = emotion_data.get("emotions", {})
-        most_frequent_mood = emotion_data.get("most_frequent_mood")
-        print("✅ 감정 분석 결과:", emotion_res.status_code, emotion_res.text)
+        if most_frequent_mood:
+            msg_res = requests.post(
+                f"{BASE_URL}/api/emotions/message/",
+                headers=headers,
+                json={"mood": most_frequent_mood}
+            )
+            comfort_message = msg_res.json().get("comfort_message", "감정 기반 메시지를 찾을 수 없습니다.")
+        else:
+            comfort_message = "감정이 분석되지 않았습니다. 편지를 먼저 작성해보세요."
     except Exception as e:
-        emotions = {}
-        most_frequent_mood = None
-        print("❌ 요청 실패:", e)
-
-    # 2. 위로 메세지 api 호출
-    try:
-        print("🚀 위로 메시지 생성 API 호출 시작")
-        msg_res = requests.post(
-            f"{BASE_URL}/api/emotions/message/",
-            headers=headers,
-            json={"emotion": most_frequent_mood}
-        )
-        comfort_message = msg_res.json().get("comfort_message")
-        print("✅ 위로 메시지 응답:", msg_res.status_code, msg_res.text)
-    except Exception as e:
+        print("❌ comfort message 오류:", e)
         comfort_message = "감정 기반 메세지를 불러올 수 없습니다."
-        print("❌ 요청 실패:", e)
-    
-    # 3. 감정 기반 추천 api 호출
+
+    # ✅ 추천 API 호출
     try:
-        print("🚀 추천 API 호출 시작")
         recommend_res = requests.post(
             f"{BASE_URL}/api/recommendations/emotion-based/",
             headers=headers,
-            cookies = request.COOKIES
+            cookies=request.COOKIES
         )
-        recommendations = recommend_res.json().get("recommendations")
-        print("✅ 추천 결과:", recommend_res.status_code, recommend_res.text)
+        recommendations = recommend_res.json().get("recommendations", "추천 결과를 찾을 수 없습니다.")
     except Exception as e:
+        print("❌ 추천 오류:", e)
         recommendations = "추천 결과를 불러올 수 없습니다."
-        print("❌ 요청 실패:", e)
-    
+
     return Response({
-        "emotions": emotions,
+        "emotions": emotion_counts,
         "most_frequent_mood": most_frequent_mood,
+        "most_frequent_detailed_mood": most_frequent_detailed_mood,
         "comfort_message": comfort_message,
         "recommendations": recommendations,
     })
@@ -243,6 +202,7 @@ def mypage(request):
             data = response.json()
             emotions = data.get("emotions", {})
             most_frequent_mood = data.get("most_frequent_mood")
+            most_frequent_detailed_mood = data.get("most_frequent_detailed_mood")  # ✅ 추가
             comfort_message = data.get("comfort_message")
             recommendations = data.get("recommendations")
         else:
@@ -310,6 +270,7 @@ def mypage(request):
         "emotions": json.dumps(emotions),
         "mood_counts": emotions,
         "most_frequent_mood": most_frequent_mood,
+        "most_frequent_detailed_mood": most_frequent_detailed_mood,
         "comfort_message": comfort_message,
         "recommendations": recommendations,
         "letter_count": letter_count,

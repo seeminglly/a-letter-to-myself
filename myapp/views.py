@@ -9,8 +9,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
+from commons.utils.emotion import analyze_emotion_for_letter
 from datetime import datetime, timedelta
-
+import openai
+import os
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Create your views here.
 def home(request):
@@ -25,6 +28,7 @@ def write_letter(request):
             letter.user = request.user  # 🔥 작성자를 현재 로그인한 사용자로 설정
             letter.category = 'future' # 기본적으로 미래 카테고리로 분류
             letter.save()
+            analyze_emotion_for_letter(letter)
             return redirect('letter_list')  # 편지 목록 페이지로 이동
     else:
         form = LetterForm()
@@ -47,8 +51,7 @@ def letter_list(request):
             letter.category = 'future'
         else:
             letter.category = 'past'
-    
-    letter.save()  # ✅ DB에 저장!
+        letter.save()  # ✅ DB에 저장!
 
 
     return render(request, 'myapp/letter_list.html', {
